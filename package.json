@@ -1,0 +1,48 @@
+{
+  "name": "parquet-toolkit",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run --project unit",
+    "test:browser": "node scripts/copy-duckdb-assets.mjs && vitest run --project browser",
+    "test:e2e": "playwright test",
+    "check:links": "node scripts/check-links.mjs"
+  },
+  "dependencies": {
+    "@duckdb/duckdb-wasm": "1.33.1-dev57.0",
+    "@sentry/nextjs": "^10.65.0",
+    "apache-arrow": "^21.1.0",
+    "gray-matter": "^4.0.3",
+    "hyparquet": "^1.26.2",
+    "hyparquet-compressors": "^1.1.1",
+    "lz4js": "^0.2.0",
+    "next": "16.2.10",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "server-only": "^0.0.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitest/browser": "^4.1.10",
+    "@vitest/browser-playwright": "4.1.10",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.10",
+    "playwright": "^1.61.1",
+    "serve": "^14.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  },
+  "packageManager": "pnpm@10.30.1"
+}
