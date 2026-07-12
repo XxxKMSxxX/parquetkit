@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { loadConversions, loadDocs } from "@/lib/content/loader";
 
@@ -55,15 +56,45 @@ export default function Home() {
 
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-12 px-6 py-16">
-      <section className="flex flex-col gap-4">
-        <h1 className="max-w-2xl text-4xl font-bold tracking-tight">
-          Work with Parquet files, entirely in your browser
-        </h1>
-        <p className="max-w-2xl text-lg text-neutral-600 dark:text-neutral-400">
-          View, query and convert Parquet files without installing Spark,
-          pandas or anything else. All processing happens locally via
-          WebAssembly — <strong>your files never leave your device</strong>.
-        </p>
+      <section className="grid items-center gap-8 lg:grid-cols-[1fr_minmax(0,460px)]">
+        <div className="flex flex-col gap-4">
+          <h1 className="max-w-2xl text-4xl font-bold tracking-tight">
+            Work with Parquet files, entirely in your browser
+          </h1>
+          <p className="max-w-2xl text-lg text-neutral-600 dark:text-neutral-400">
+            View, query and convert Parquet files without installing Spark,
+            pandas or anything else. All processing happens locally via
+            WebAssembly — <strong>your files never leave your device</strong>.
+          </p>
+        </div>
+        <Link
+          href="/parquet-viewer"
+          aria-label="Try the sample dataset in the viewer"
+          className="group flex flex-col gap-2"
+        >
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/hero-demo-poster.jpg"
+            aria-hidden="true"
+            className="w-full rounded-lg border border-neutral-200 transition-colors group-hover:border-sky-500/60 motion-reduce:hidden dark:border-neutral-800 dark:group-hover:border-sky-400/60"
+          >
+            <source src="/hero-demo.mp4" type="video/mp4" />
+          </video>
+          <Image
+            src="/hero-demo-poster.jpg"
+            width={1200}
+            height={664}
+            alt="The Parquet Viewer showing schema and rows of a sample dataset"
+            className="hidden w-full rounded-lg border border-neutral-200 motion-reduce:block dark:border-neutral-800"
+          />
+          <span className="text-center text-xs text-neutral-500 transition-colors group-hover:text-sky-600 dark:group-hover:text-sky-400">
+            The sample dataset opening in the viewer — try it yourself →
+          </span>
+        </Link>
       </section>
 
       <section aria-label="Why ParquetKit" className="grid gap-4 sm:grid-cols-3">
