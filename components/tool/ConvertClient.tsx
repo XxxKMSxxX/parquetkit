@@ -21,6 +21,9 @@ interface Converted {
   outputSize: number;
 }
 
+/** Download links must be clicked with a delay or browsers block the batch */
+const BATCH_DOWNLOAD_INTERVAL_MS = 300;
+
 const ACCEPT: Record<ConversionPair["from"], string> = {
   parquet: ".parquet",
   csv: ".csv",
@@ -45,7 +48,7 @@ export function ConvertClient({ pair }: ConvertClientProps) {
   const [status, setStatus] = useState<
     "idle" | "loading-engine" | "converting"
   >("idle");
-  const [result, setResult] = useState<Converted | null>(null);
+  const [results, setResults] = useState<Converted[]>([]);
   const [error, setError] = useState<string | null>(null);
   const prefetched = useRef(false);
 
@@ -57,42 +60,49 @@ export function ConvertClient({ pair }: ConvertClientProps) {
 
   const onFiles = useCallback(
     async (files: File[]) => {
-      const file = files[0];
       setError(null);
-      setResult(null);
+      // Revoke the previous batch before starting a new one
+      setResults((prev) => {
+        prev.forEach((converted) => URL.revokeObjectURL(converted.url));
+        return [];
+      });
       setStatus("loading-engine");
       try {
         const engine = await loadEngine();
         const db = await engine.initDuckDB(resolveBundleSource());
-
         setStatus("converting");
-        const inputName = `input.${pair.from}`;
-        await engine.registerFile(db, inputName, file);
 
         const { extension, mimeType } = outputFileMeta(pair.to);
-        const outputName = `output.${extension}`;
-        const sql = buildConversionSql(pair, inputName, outputName);
-        const bytes = await engine.runCopy(db, sql, outputName);
-        await engine.dropFile(db, inputName).catch(() => undefined);
+        const batch: Converted[] = [];
+        for (const [index, file] of files.entries()) {
+          const inputName = `input-${index}.${pair.from}`;
+          const outputName = `output-${index}.${extension}`;
+          await engine.registerFile(db, inputName, file);
+          const sql = buildConversionSql(pair, inputName, outputName);
+          const bytes = await engine.runCopy(db, sql, outputName);
+          await engine.dropFile(db, inputName).catch(() => undefined);
 
-        const blob = new Blob(
-          [bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer],
-          { type: mimeType },
-        );
-        const url = URL.createObjectURL(blob);
-        const baseName = file.name.replace(/\.[^.]+$/, "") || "converted";
-        const fileName = `${baseName}.${extension}`;
+          const blob = new Blob(
+            [bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer],
+            { type: mimeType },
+          );
+          const baseName = file.name.replace(/\.[^.]+$/, "") || "converted";
+          batch.push({
+            url: URL.createObjectURL(blob),
+            fileName: `${baseName}.${extension}`,
+            inputSize: file.size,
+            outputSize: blob.size,
+          });
+          setResults([...batch]);
+        }
 
-        setResult((prev) => {
-          if (prev) URL.revokeObjectURL(prev.url);
-          return { url, fileName, inputSize: file.size, outputSize: blob.size };
-        });
-
-        // Trigger the automatic download
-        const anchor = document.createElement("a");
-        anchor.href = url;
-        anchor.download = fileName;
-        anchor.click();
+        // Auto-download only for a single file — browsers block download bursts
+        if (batch.length === 1) {
+          const anchor = document.createElement("a");
+          anchor.href = batch[0].url;
+          anchor.download = batch[0].fileName;
+          anchor.click();
+        }
       } catch (e) {
         setError(e instanceof Error ? e.message : String(e));
       } finally {
@@ -102,18 +112,30 @@ export function ConvertClient({ pair }: ConvertClientProps) {
     [pair],
   );
 
+  const downloadAll = useCallback(() => {
+    results.forEach((converted, index) => {
+      setTimeout(() => {
+        const anchor = document.createElement("a");
+        anchor.href = converted.url;
+        anchor.download = converted.fileName;
+        anchor.click();
+      }, index * BATCH_DOWNLOAD_INTERVAL_MS);
+    });
+  }, [results]);
+
   return (
     <div className="flex flex-col gap-4">
       <FileDropZone
         accept={ACCEPT[pair.from]}
+        multiple
         label={
           status === "idle"
-            ? `Drop a ${pair.from.toUpperCase()} file to convert to ${pair.to.toUpperCase()}`
+            ? `Drop ${pair.from.toUpperCase()} files to convert to ${pair.to.toUpperCase()}`
             : status === "loading-engine"
               ? "Loading conversion engine…"
               : "Converting…"
         }
-        sublabel="The converted file downloads automatically when done"
+        sublabel="A single file downloads automatically; batches get a download list"
         onFiles={onFiles}
         onInteract={prefetch}
       />
@@ -155,24 +177,48 @@ export function ConvertClient({ pair }: ConvertClientProps) {
         </p>
       ) : null}
 
-      {result ? (
+      {results.length > 0 ? (
         <div
-          className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-green-300 bg-green-50 px-4 py-3 text-sm dark:border-green-900 dark:bg-green-950/30"
+          className="flex flex-col gap-2 rounded-lg border border-green-300 bg-green-50 px-4 py-3 text-sm dark:border-green-900 dark:bg-green-950/30"
           data-testid="convert-result"
         >
-          <p>
-            <span className="font-semibold">{result.fileName}</span>{" "}
-            <span className="text-neutral-500">
-              ({formatBytes(result.inputSize)} → {formatBytes(result.outputSize)})
-            </span>
-          </p>
-          <a
-            href={result.url}
-            download={result.fileName}
-            className="rounded-md bg-green-700 px-4 py-1.5 font-semibold text-white hover:bg-green-600"
-          >
-            Download again
-          </a>
+          {results.length > 1 ? (
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-semibold">
+                {results.length} files converted
+              </p>
+              <button
+                type="button"
+                onClick={downloadAll}
+                className="rounded-md bg-green-700 px-4 py-1.5 font-semibold text-white hover:bg-green-600"
+              >
+                Download all
+              </button>
+            </div>
+          ) : null}
+          <ul className="flex flex-col gap-1.5">
+            {results.map((converted) => (
+              <li
+                key={converted.url}
+                className="flex flex-wrap items-center justify-between gap-3"
+              >
+                <p>
+                  <span className="font-semibold">{converted.fileName}</span>{" "}
+                  <span className="text-neutral-500">
+                    ({formatBytes(converted.inputSize)} →{" "}
+                    {formatBytes(converted.outputSize)})
+                  </span>
+                </p>
+                <a
+                  href={converted.url}
+                  download={converted.fileName}
+                  className="rounded-md bg-green-700 px-4 py-1.5 font-semibold text-white hover:bg-green-600"
+                >
+                  {results.length > 1 ? "Download" : "Download again"}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       ) : null}
     </div>

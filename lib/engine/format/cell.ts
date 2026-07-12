@@ -21,3 +21,17 @@ export function toCsv(columns: string[], rows: Record<string, unknown>[]): strin
   }
   return lines.join("\r\n") + "\r\n";
 }
+
+/** Serialize a row to pretty JSON, stringifying values JSON cannot represent. */
+export function toJson(row: Record<string, unknown>): string {
+  return JSON.stringify(
+    row,
+    (_key, value) => {
+      if (typeof value === "bigint") return value.toString();
+      if (value instanceof Date) return value.toISOString();
+      if (value instanceof Uint8Array) return formatCell(value);
+      return value;
+    },
+    2,
+  );
+}

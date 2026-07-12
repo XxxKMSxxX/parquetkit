@@ -36,14 +36,14 @@ export default async function DocPage({
     .slice(0, 3);
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-10 px-6 py-12">
-      <header className="flex flex-col gap-3">
+    <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-10 px-6 py-12">
+      <header className="flex max-w-2xl flex-col gap-3">
         <p className="text-sm">
           <Link href="/docs" className="text-neutral-500 underline">
             Guides
           </Link>
         </p>
-        <h1 className="text-3xl font-bold tracking-tight">{entry.meta.title}</h1>
+        <h1 className="max-w-2xl text-3xl font-bold tracking-tight">{entry.meta.title}</h1>
       </header>
 
       <Markdown>{entry.body}</Markdown>
@@ -53,7 +53,7 @@ export default async function DocPage({
       <ShareButtons url={`${site}/docs/${slug}`} title={entry.meta.title} />
 
       {related.length > 0 ? (
-        <section className="flex flex-col gap-3 border-t border-neutral-200 pt-8 dark:border-neutral-800">
+        <section className="flex max-w-3xl flex-col gap-3 border-t border-neutral-200 pt-8 dark:border-neutral-800">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
             More guides
           </h2>

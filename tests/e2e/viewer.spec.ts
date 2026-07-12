@@ -37,7 +37,7 @@ test("opens a Parquet file and shows schema, metadata and data", async ({
     .getByTestId("file-input")
     .setInputFiles(path.join(FIXTURES, "multi_rowgroup.parquet"));
   await expect(page.getByTestId("metadata-panel")).toContainText("5,000");
-  await page.getByRole("button", { name: "→" }).click();
+  await page.getByRole("button", { name: "Next page" }).click();
   await expect(page.getByTestId("data-table")).toContainText("user_050");
 });
 
@@ -49,4 +49,31 @@ test("opens the sample file in one click", async ({ page }) => {
   await expect(page.getByTestId("metadata-panel")).toContainText("5,000");
   await expect(page.getByTestId("schema-panel")).toContainText("ordered_at");
   await expect(page.getByTestId("data-table")).toContainText("100001");
+});
+
+test("pagination pack: page size, jump and arrow keys", async ({ page }) => {
+  await page.goto("/parquet-viewer");
+  await page.getByRole("button", { name: "Load a sample file" }).click();
+  await expect(page.getByTestId("viewer-result")).toBeVisible();
+
+  // Metadata shows the writer
+  await expect(page.getByTestId("metadata-panel")).toContainText("Created by");
+
+  // 500 rows per page → 5,000 rows = 10 pages
+  await page.getByTestId("page-size").selectOption("500");
+  await expect(page.getByTestId("viewer-result")).toContainText("/ 10");
+
+  // Jump to page 10 → last order id 105000 is visible
+  await page.getByTestId("page-jump").fill("10");
+  await expect(page.getByTestId("data-table")).toContainText("105000");
+
+  // Arrow keys page when focus is outside inputs
+  await page.getByRole("heading", { name: "Data" }).click();
+  await page.keyboard.press("ArrowLeft");
+  await expect(page.getByTestId("page-jump")).toHaveValue("9");
+
+  // ...but not while typing in the page-jump input
+  await page.getByTestId("page-jump").focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByTestId("page-jump")).toHaveValue("9");
 });

@@ -43,3 +43,42 @@ test("queries the sample dataset in one click", async ({ page }) => {
   await expect(page.getByTestId("sql-result")).toBeVisible({ timeout: 30_000 });
   await expect(page.getByTestId("data-table")).toContainText("US");
 });
+
+test("runs with Cmd/Ctrl+Enter and shows timing", async ({ page }) => {
+  await page.goto("/sql?duckdb=self");
+  await page.getByTestId("sql-sample").click();
+  await expect(page.getByTestId("sql-result")).toBeVisible({ timeout: 30_000 });
+
+  // ⌘/Ctrl+Enter re-runs the restored query
+  await page.getByTestId("sql-editor").focus();
+  await page.keyboard.press("ControlOrMeta+Enter");
+  await expect(page.getByTestId("sql-result")).toContainText("ms");
+  await expect(page.getByTestId("sql-result")).toContainText("columns");
+});
+
+test("restores the last query after a reload", async ({ page }) => {
+  await page.goto("/sql?duckdb=self");
+  await page.getByTestId("sql-editor").fill("SELECT 42 AS answer");
+  await page.waitForTimeout(600); // debounce save
+  await page.reload();
+  await expect(page.getByTestId("sql-editor")).toHaveValue("SELECT 42 AS answer");
+});
+
+test("file chip quick actions run one-click queries", async ({ page }) => {
+  await page.goto("/sql?duckdb=self");
+  await page.getByTestId("sql-sample").click();
+  await expect(page.getByTestId("sql-result")).toBeVisible({ timeout: 30_000 });
+
+  // Stats → SUMMARIZE output has a column_name column
+  await page.getByTestId("chip-stats").click();
+  await expect(page.getByTestId("data-table")).toContainText("column_name", {
+    timeout: 30_000,
+  });
+
+  // Clicking the file name inserts it at the cursor
+  await page.getByTestId("sql-editor").fill("SELECT * FROM ");
+  await page.getByRole("button", { name: "demo.parquet", exact: true }).click();
+  await expect(page.getByTestId("sql-editor")).toHaveValue(
+    "SELECT * FROM 'demo.parquet'",
+  );
+});

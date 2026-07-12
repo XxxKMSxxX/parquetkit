@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function SqlWorkbenchPage() {
   return (
     <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-10 px-6 py-12">
-      <header className="flex max-w-3xl flex-col gap-3">
+      <header className="flex max-w-2xl flex-col gap-3">
         <h1 className="text-3xl font-bold tracking-tight">SQL Workbench</h1>
         <p className="text-neutral-600 dark:text-neutral-400">
           Query local Parquet, CSV and JSON files with real SQL, powered by
@@ -21,9 +21,10 @@ export default function SqlWorkbenchPage() {
 
       <SqlTool />
 
-      <section className="flex max-w-3xl flex-col gap-3 border-t border-neutral-200 pt-8 dark:border-neutral-800">
-        <h2 className="text-xl font-semibold">How it works</h2>
-        <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+      <section className="grid gap-8 border-t border-neutral-200 pt-8 lg:grid-cols-2 dark:border-neutral-800">
+        <div className="flex max-w-prose flex-col gap-3">
+          <h2 className="text-xl font-semibold">How it works</h2>
+          <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
           The workbench runs{" "}
           <a className="underline" href="https://duckdb.org/docs/api/wasm/overview" rel="noopener">
             DuckDB-WASM
@@ -36,7 +37,32 @@ export default function SqlWorkbenchPage() {
           </code>
           . The full DuckDB SQL dialect is available, including window
           functions, aggregates and JSON functions.
-        </p>
+          </p>
+        </div>
+        <div className="flex max-w-prose flex-col gap-3">
+          <h2 className="text-xl font-semibold">Tips &amp; shortcuts</h2>
+          <ul className="flex flex-col gap-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+            <li>
+              Press{" "}
+              <kbd className="rounded border border-neutral-300 px-1.5 py-0.5 font-mono text-xs dark:border-neutral-700">
+                ⌘ Enter
+              </kbd>{" "}
+              (or Ctrl+Enter) to run the query.
+            </li>
+            <li>
+              Click a registered file&apos;s name to insert it at the cursor,
+              or use its <em>Preview</em> / <em>Schema</em> / <em>Stats</em>{" "}
+              buttons for instant one-click queries.
+            </li>
+            <li>
+              Join across formats freely — e.g.{" "}
+              <code className="rounded bg-neutral-100 px-1 py-0.5 font-mono text-xs dark:bg-neutral-900">
+                SELECT * FROM &apos;a.parquet&apos; JOIN &apos;b.csv&apos; USING (id)
+              </code>
+            </li>
+            <li>Your last query is restored when you come back.</li>
+          </ul>
+        </div>
       </section>
     </main>
   );

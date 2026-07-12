@@ -12,8 +12,8 @@ export function Faq({ items }: FaqProps) {
       <dl className="flex flex-col gap-4">
         {items.map((item) => (
           <div key={item.question}>
-            <dt className="font-medium">{item.question}</dt>
-            <dd className="mt-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+            <dt className="max-w-prose font-medium">{item.question}</dt>
+            <dd className="mt-1 max-w-prose text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
               {item.answer}
             </dd>
           </div>

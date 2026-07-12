@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { formatCell } from "@/lib/engine/format/cell";
+import { formatCell, toJson } from "@/lib/engine/format/cell";
 
 interface DataTableProps {
   columns: string[];
@@ -31,7 +31,9 @@ export function DataTable({ columns, rows, offset = 0 }: DataTableProps) {
       <table className="w-full text-sm" data-testid="data-table">
         <thead>
           <tr className="border-b border-neutral-200 bg-neutral-50 text-left dark:border-neutral-800 dark:bg-neutral-900">
-            <th className="px-3 py-2 font-medium text-neutral-400">#</th>
+            <th className="px-3 py-2 font-medium text-neutral-400" title="Click a row number to copy the row as JSON">
+              #
+            </th>
             {columns.map((col) => (
               <th key={col} className="whitespace-nowrap px-3 py-2 font-semibold">
                 {col}
@@ -45,7 +47,17 @@ export function DataTable({ columns, rows, offset = 0 }: DataTableProps) {
               key={offset + i}
               className="border-b border-neutral-100 last:border-0 dark:border-neutral-900"
             >
-              <td className="px-3 py-1.5 text-neutral-400">{offset + i + 1}</td>
+              <td
+                onClick={() => copyCell(`row:${offset + i}`, toJson(row))}
+                title="Copy row as JSON"
+                className={`cursor-copy px-3 py-1.5 transition-colors ${
+                  copiedCell === `row:${offset + i}`
+                    ? "bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300"
+                    : "text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-900/60"
+                }`}
+              >
+                {copiedCell === `row:${offset + i}` ? "✓" : offset + i + 1}
+              </td>
               {columns.map((col) => {
                 const value = formatCell(row[col]);
                 const key = `${offset + i}:${col}`;

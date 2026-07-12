@@ -30,3 +30,13 @@ body {
 ::selection {
   background: rgba(56, 189, 248, 0.3);
 }
+
+/* Site-wide wrapping quality: balanced headings, no orphans in prose */
+@layer base {
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+  }
+  p, li, dt, figcaption {
+    text-wrap: pretty;
+  }
+}

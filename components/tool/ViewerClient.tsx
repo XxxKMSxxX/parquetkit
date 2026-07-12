@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { stashFiles } from "./file-handoff";
 import { FileDropZone } from "./FileDropZone";
 import { DataTable } from "./DataTable";
 import { formatBytes, formatRowCount } from "@/lib/engine/format/bytes";
@@ -11,36 +13,42 @@ import {
   type ParquetHandle,
 } from "@/lib/engine/parquet/reader";
 
-const PAGE_SIZE = 50;
+const PAGE_SIZES = [50, 100, 500] as const;
 
 interface LoadedFile {
   name: string;
   size: number;
   handle: ParquetHandle;
+  file: File;
 }
 
 export function ViewerClient() {
+  const router = useRouter();
   const [loaded, setLoaded] = useState<LoadedFile | null>(null);
   const [rows, setRows] = useState<Record<string, unknown>[]>([]);
   const [page, setPage] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [schemaCopied, setSchemaCopied] = useState(false);
+  const [pageSize, setPageSize] = useState<number>(50);
 
-  const loadPage = useCallback(async (file: LoadedFile, nextPage: number) => {
-    const total = Number(file.handle.info.numRows);
-    const start = nextPage * PAGE_SIZE;
-    const end = Math.min(start + PAGE_SIZE, total);
-    setBusy(true);
-    try {
-      setRows(start < end ? await readRows(file.handle, start, end) : []);
-      setPage(nextPage);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setBusy(false);
-    }
-  }, []);
+  const loadPage = useCallback(
+    async (file: LoadedFile, nextPage: number, size: number) => {
+      const total = Number(file.handle.info.numRows);
+      const start = nextPage * size;
+      const end = Math.min(start + size, total);
+      setBusy(true);
+      try {
+        setRows(start < end ? await readRows(file.handle, start, end) : []);
+        setPage(nextPage);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : String(e));
+      } finally {
+        setBusy(false);
+      }
+    },
+    [],
+  );
 
   const onFiles = useCallback(
     async (files: File[]) => {
@@ -49,9 +57,9 @@ export function ViewerClient() {
       setBusy(true);
       try {
         const handle = await openParquet(asyncBufferFromBlob(file));
-        const next = { name: file.name, size: file.size, handle };
+        const next = { name: file.name, size: file.size, handle, file };
         setLoaded(next);
-        await loadPage(next, 0);
+        await loadPage(next, 0, pageSize);
       } catch (e) {
         setLoaded(null);
         setError(
@@ -63,8 +71,25 @@ export function ViewerClient() {
         setBusy(false);
       }
     },
-    [loadPage],
+    [loadPage, pageSize],
   );
+
+  useEffect(() => {
+    if (!loaded) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+      const total = Math.max(1, Math.ceil(Number(loaded.handle.info.numRows) / pageSize));
+      if (e.key === "ArrowLeft" && page > 0) {
+        void loadPage(loaded, page - 1, pageSize);
+      } else if (e.key === "ArrowRight" && page < total - 1) {
+        void loadPage(loaded, page + 1, pageSize);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [loaded, page, pageSize, loadPage]);
 
   const loadSample = useCallback(async () => {
     setError(null);
@@ -122,27 +147,41 @@ export function ViewerClient() {
 
   const { info } = loaded.handle;
   const totalRows = Number(info.numRows);
-  const totalPages = Math.max(1, Math.ceil(totalRows / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(totalRows / pageSize));
 
   return (
     <div className="flex flex-col gap-6" data-testid="viewer-result">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="font-mono text-sm font-semibold">{loaded.name}</h2>
-        <button
-          type="button"
-          onClick={() => {
-            setLoaded(null);
-            setRows([]);
-            setError(null);
-          }}
-          className="rounded-md border border-neutral-300 px-3 py-1 text-sm hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
-        >
-          Open another file
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            data-testid="open-in-sql"
+            onClick={() => {
+              stashFiles([loaded.file]);
+              // Preserve the query string so ?duckdb=self carries over (CI)
+              router.push(`/sql${window.location.search}`);
+            }}
+            className="rounded-md bg-sky-600 px-3 py-1 text-sm font-semibold text-white transition-colors hover:bg-sky-500"
+          >
+            Query in SQL Workbench
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setLoaded(null);
+              setRows([]);
+              setError(null);
+            }}
+            className="rounded-md border border-neutral-300 px-3 py-1 text-sm hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
+          >
+            Open another file
+          </button>
+        </div>
       </div>
 
       <dl
-        className="grid grid-cols-2 gap-3 rounded-lg border border-neutral-200 p-4 text-sm sm:grid-cols-5 dark:border-neutral-800"
+        className="grid grid-cols-2 gap-3 rounded-lg border border-neutral-200 p-4 text-sm sm:grid-cols-3 lg:grid-cols-6 dark:border-neutral-800"
         data-testid="metadata-panel"
       >
         <div>
@@ -164,6 +203,15 @@ export function ViewerClient() {
         <div>
           <dt className="text-neutral-500">File size</dt>
           <dd className="font-mono font-semibold">{formatBytes(loaded.size)}</dd>
+        </div>
+        <div>
+          <dt className="text-neutral-500">Created by</dt>
+          <dd
+            className="truncate font-mono font-semibold"
+            title={info.createdBy ?? undefined}
+          >
+            {info.createdBy ?? "—"}
+          </dd>
         </div>
       </dl>
 
@@ -218,28 +266,71 @@ export function ViewerClient() {
       </section>
 
       <section className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="font-semibold">Data</h3>
-          <div className="flex items-center gap-2 text-sm">
-            <button
-              type="button"
-              disabled={page === 0 || busy}
-              onClick={() => loadPage(loaded, page - 1)}
-              className="rounded-md border border-neutral-300 px-2 py-1 disabled:opacity-40 dark:border-neutral-700"
-            >
-              ←
-            </button>
-            <span className="tabular-nums">
-              {page + 1} / {totalPages}
-            </span>
-            <button
-              type="button"
-              disabled={page >= totalPages - 1 || busy}
-              onClick={() => loadPage(loaded, page + 1)}
-              className="rounded-md border border-neutral-300 px-2 py-1 disabled:opacity-40 dark:border-neutral-700"
-            >
-              →
-            </button>
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <label className="flex items-center gap-1.5 text-neutral-500">
+              Rows
+              <select
+                value={pageSize}
+                disabled={busy}
+                data-testid="page-size"
+                onChange={(e) => {
+                  const size = Number(e.target.value);
+                  // Keep the first visible row anchored when the size changes
+                  const newPage = Math.floor((page * pageSize) / size);
+                  setPageSize(size);
+                  void loadPage(loaded, newPage, size);
+                }}
+                className="rounded-md border border-neutral-300 bg-transparent px-2 py-1 dark:border-neutral-700 dark:bg-neutral-950"
+              >
+                {PAGE_SIZES.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                disabled={page === 0 || busy}
+                onClick={() => loadPage(loaded, page - 1, pageSize)}
+                aria-label="Previous page"
+                className="rounded-md border border-neutral-300 px-2 py-1 disabled:opacity-40 dark:border-neutral-700"
+              >
+                ←
+              </button>
+              <span className="flex items-center gap-1 tabular-nums">
+                <input
+                  type="number"
+                  min={1}
+                  max={totalPages}
+                  value={page + 1}
+                  disabled={busy}
+                  data-testid="page-jump"
+                  aria-label="Page number"
+                  onChange={(e) => {
+                    const target = Math.min(
+                      totalPages,
+                      Math.max(1, Number(e.target.value) || 1),
+                    );
+                    if (target - 1 !== page) void loadPage(loaded, target - 1, pageSize);
+                  }}
+                  className="w-14 rounded-md border border-neutral-300 bg-transparent px-1 py-1 text-center dark:border-neutral-700 dark:bg-neutral-950"
+                />
+                / {totalPages}
+              </span>
+              <button
+                type="button"
+                disabled={page >= totalPages - 1 || busy}
+                onClick={() => loadPage(loaded, page + 1, pageSize)}
+                aria-label="Next page"
+                className="rounded-md border border-neutral-300 px-2 py-1 disabled:opacity-40 dark:border-neutral-700"
+              >
+                →
+              </button>
+            </div>
           </div>
         </div>
         {error ? (
@@ -250,7 +341,7 @@ export function ViewerClient() {
         <DataTable
           columns={info.columns.map((c) => c.name)}
           rows={rows}
-          offset={page * PAGE_SIZE}
+          offset={page * pageSize}
         />
       </section>
     </div>

@@ -38,3 +38,23 @@ test("converts the sample file in one click", async ({ page }) => {
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe("demo.csv");
 });
+
+test("converts multiple files in one batch", async ({ page }) => {
+  await page.goto("/convert/parquet-to-csv?duckdb=self");
+  await page
+    .getByTestId("file-input")
+    .setInputFiles([
+      path.join(FIXTURES, "basic_snappy.parquet"),
+      path.join(FIXTURES, "multi_rowgroup.parquet"),
+    ]);
+
+  const result = page.getByTestId("convert-result");
+  await expect(result).toContainText("2 files converted", { timeout: 30_000 });
+  await expect(result).toContainText("basic_snappy.csv");
+  await expect(result).toContainText("multi_rowgroup.csv");
+
+  const downloadPromise = page.waitForEvent("download");
+  await result.getByRole("link", { name: "Download", exact: true }).first().click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("basic_snappy.csv");
+});

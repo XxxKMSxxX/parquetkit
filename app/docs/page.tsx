@@ -11,14 +11,14 @@ export const metadata: Metadata = {
 export default function DocsIndexPage() {
   const docs = loadDocs();
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 py-12">
-      <header className="flex flex-col gap-3">
+    <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-8 px-6 py-12">
+      <header className="flex max-w-2xl flex-col gap-3">
         <h1 className="text-3xl font-bold tracking-tight">Guides</h1>
         <p className="text-neutral-600 dark:text-neutral-400">
           Practical, tool-agnostic guides on working with Parquet files.
         </p>
       </header>
-      <ul className="flex flex-col gap-4">
+      <ul className="flex max-w-3xl flex-col gap-4">
         {docs.map((doc) => (
           <li key={doc.meta.slug}>
             <Link
