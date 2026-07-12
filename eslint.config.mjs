@@ -34,6 +34,8 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     // DuckDB-WASM vendor files copied for self-hosting (gitignored)
     "public/duckdb/**",
+    // Standalone npm package placeholder, not part of the Next.js app
+    "packages/**",
   ]),
 ]);
 

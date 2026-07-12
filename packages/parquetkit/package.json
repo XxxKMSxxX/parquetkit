@@ -1,0 +1,19 @@
+{
+  "name": "parquetkit",
+  "version": "0.0.0",
+  "description": "Placeholder — the real package (a UI-free Parquet read/convert engine, extracted from parquetkit.com) has not shipped yet. Reserved to prevent name squatting.",
+  "license": "MIT",
+  "author": "Shun Kimura",
+  "homepage": "https://parquetkit.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/XxxKMSxxX/parquetkit.git",
+    "directory": "packages/parquetkit"
+  },
+  "keywords": ["parquet", "duckdb", "arrow", "csv", "placeholder"],
+  "main": "src/index.js",
+  "files": ["src", "README.md"],
+  "publishConfig": {
+    "access": "public"
+  }
+}
