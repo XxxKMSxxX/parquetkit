@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function SqlWorkbenchPage() {
   return (
     <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-10 px-6 py-12">
-      <header className="flex max-w-2xl flex-col gap-3">
+      <header className="flex flex-col gap-3">
         <h1 className="text-3xl font-bold tracking-tight">SQL Workbench</h1>
         <p className="text-neutral-600 dark:text-neutral-400">
           Query local Parquet, CSV and JSON files with real SQL, powered by
@@ -22,7 +22,7 @@ export default function SqlWorkbenchPage() {
       <SqlTool />
 
       <section className="grid gap-8 border-t border-neutral-200 pt-8 lg:grid-cols-2 dark:border-neutral-800">
-        <div className="flex max-w-prose flex-col gap-3">
+        <div className="flex flex-col gap-3">
           <h2 className="text-xl font-semibold">How it works</h2>
           <p className="text-[15px] leading-7 text-neutral-600 dark:text-neutral-400">
           The workbench runs{" "}
@@ -39,7 +39,7 @@ export default function SqlWorkbenchPage() {
           functions, aggregates and JSON functions.
           </p>
         </div>
-        <div className="flex max-w-prose flex-col gap-3">
+        <div className="flex flex-col gap-3">
           <h2 className="text-xl font-semibold">Tips &amp; shortcuts</h2>
           <ul className="flex flex-col gap-2 text-[15px] leading-7 text-neutral-600 dark:text-neutral-400">
             <li>

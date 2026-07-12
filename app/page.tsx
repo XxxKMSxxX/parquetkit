@@ -62,10 +62,10 @@ export default function Home() {
       />
       <section className="grid items-center gap-8 lg:grid-cols-[1fr_minmax(0,640px)]">
         <div className="flex flex-col gap-4">
-          <h1 className="max-w-2xl text-4xl font-bold tracking-tight">
+          <h1 className="text-4xl font-bold tracking-tight">
             Work with Parquet files, entirely in your browser
           </h1>
-          <p className="max-w-2xl text-lg text-neutral-600 dark:text-neutral-400">
+          <p className="text-lg text-neutral-600 dark:text-neutral-400">
             View, query and convert Parquet files without installing Spark,
             pandas or anything else. All processing happens locally via
             WebAssembly — <strong>your files never leave your device</strong>.
