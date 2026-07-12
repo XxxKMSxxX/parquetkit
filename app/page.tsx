@@ -69,11 +69,16 @@ export default function Home() {
           <h1 className="text-4xl font-bold tracking-tight">
             Work with Parquet files, entirely in your browser
           </h1>
-          <p className="text-lg text-neutral-600 dark:text-neutral-400">
-            View, query and convert Parquet files without installing Spark,
-            pandas or anything else. All processing happens locally via
-            WebAssembly — <strong>your files never leave your device</strong>.
-          </p>
+          <div className="flex flex-col text-lg text-neutral-600 dark:text-neutral-400">
+            <p>
+              View, query and convert Parquet files without installing Spark,
+              pandas or anything else.
+            </p>
+            <p>
+              All processing happens locally via WebAssembly —{" "}
+              <strong>your files never leave your device</strong>.
+            </p>
+          </div>
         </div>
         <Link
           href="/parquet-viewer"

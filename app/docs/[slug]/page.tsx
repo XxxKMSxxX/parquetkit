@@ -45,7 +45,7 @@ export default async function DocPage({
   ];
 
   return (
-    <main id="main" className="mx-auto w-full max-w-[1800px] flex-1 px-6 py-12 lg:grid lg:grid-cols-[minmax(0,52rem)_16rem] lg:justify-between lg:gap-12">
+    <main id="main" className="mx-auto w-full max-w-[1800px] flex-1 px-6 py-12 lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-16">
       <div className="flex min-w-0 flex-col gap-10">
       <details className="group rounded-lg border border-neutral-200 p-4 lg:hidden dark:border-neutral-800">
         <summary className="cursor-pointer text-sm font-semibold text-neutral-400">

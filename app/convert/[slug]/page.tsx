@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ConvertTool } from "@/components/tool/loaders";
 import { Faq } from "@/components/seo/Faq";
+import { Lead } from "@/components/seo/Lead";
 import { Toc } from "@/components/seo/Toc";
 import { Markdown } from "@/components/seo/Markdown";
 import { findConversion, loadConversions } from "@/lib/content/loader";
@@ -61,9 +62,7 @@ export default async function ConversionPage({
         <h1 className="text-3xl font-bold tracking-tight">
           Convert {from} to {to}
         </h1>
-        <p className="text-neutral-600 dark:text-neutral-400">
-          {entry.meta.description}
-        </p>
+        <Lead text={entry.meta.description} />
       </header>
 
       <ConvertTool pair={pair} />
@@ -77,7 +76,7 @@ export default async function ConversionPage({
         </div>
       </details>
 
-      <div className="lg:grid lg:grid-cols-[minmax(0,52rem)_16rem] lg:justify-between lg:gap-12">
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-16">
         <div className="flex min-w-0 flex-col gap-10">
           <div className="border-t border-neutral-200 pt-8 dark:border-neutral-800">
             <Markdown>{entry.body}</Markdown>

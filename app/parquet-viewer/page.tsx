@@ -12,12 +12,16 @@ export default function ParquetViewerPage() {
     <main id="main" className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-10 px-6 py-12">
       <header className="flex flex-col gap-3">
         <h1 className="text-3xl font-bold tracking-tight">Parquet Viewer</h1>
-        <p className="text-neutral-600 dark:text-neutral-400">
-          Open a Parquet file and inspect its schema, metadata and data — right
-          here in your browser. Nothing is uploaded: reading happens locally
-          via WebAssembly, so it works with confidential data and
-          multi-gigabyte files alike.
-        </p>
+        <div className="flex flex-col text-neutral-600 dark:text-neutral-400">
+          <p>
+            Open a Parquet file and inspect its schema, metadata and data —
+            right here in your browser.
+          </p>
+          <p>
+            Nothing is uploaded: reading happens locally via WebAssembly, so it
+            works with confidential data and multi-gigabyte files alike.
+          </p>
+        </div>
       </header>
 
       <ViewerTool />
