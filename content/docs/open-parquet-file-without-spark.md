@@ -2,6 +2,7 @@
 slug: open-parquet-file-without-spark
 title: "How to Open a Parquet File Without Spark or Python"
 description: "Five ways to open and inspect a Parquet file — from zero-install browser tools to DuckDB one-liners — and when each one makes sense."
+date: "2026-07-12"
 faq:
   - question: "Can I open a Parquet file in Excel?"
     answer: "Not directly — Excel has no native Parquet support. The quickest route is converting the file to CSV first, then opening that in Excel."

@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { SqlTool } from "@/components/tool/loaders";
+import { JsonLd, softwareAppJsonLd } from "@/components/seo/JsonLd";
+
+const TITLE = "SQL Workbench — Query Parquet & CSV Files in Your Browser";
+const DESCRIPTION =
+  "Run SQL queries against local Parquet, CSV and JSON files with DuckDB WebAssembly. Everything stays on your device — no upload, no signup.";
 
 export const metadata: Metadata = {
-  title: "SQL Workbench — Query Parquet & CSV Files in Your Browser",
-  description:
-    "Run SQL queries against local Parquet, CSV and JSON files with DuckDB WebAssembly. Everything stays on your device — no upload, no signup.",
+  title: TITLE,
+  description: DESCRIPTION,
 };
 
 export default function SqlWorkbenchPage() {
@@ -69,6 +73,17 @@ export default function SqlWorkbenchPage() {
           </ul>
         </div>
       </section>
+
+      <JsonLd
+        data={softwareAppJsonLd(
+          process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+          {
+            name: "ParquetKit — SQL Workbench",
+            description: DESCRIPTION,
+            url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/sql`,
+          },
+        )}
+      />
     </main>
   );
 }

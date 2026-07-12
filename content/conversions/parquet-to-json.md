@@ -2,6 +2,7 @@
 slug: parquet-to-json
 title: "Convert Parquet to JSON Online — Free & Private"
 description: "Convert Parquet files to a JSON array locally in your browser. Nested columns are preserved as real JSON objects — no upload, no signup."
+date: "2026-07-12"
 faq:
   - question: "What JSON structure does the output have?"
     answer: "The output is a single JSON array containing one object per row. If you need one object per line for streaming pipelines, use the Parquet to JSONL converter instead."

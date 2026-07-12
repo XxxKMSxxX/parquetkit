@@ -2,6 +2,7 @@
 slug: open-parquet-in-excel
 title: "How to Open a Parquet File in Excel (Step by Step)"
 description: "Excel cannot read Parquet natively. Convert the file to CSV in your browser — and trim oversized files with SQL first — to get it into a spreadsheet."
+date: "2026-07-12"
 faq:
   - question: "Does Excel support Parquet natively?"
     answer: "No. Double-clicking a .parquet file does nothing useful. Power Query in some Microsoft 365 builds can import Parquet, but availability varies by version and platform, so CSV conversion remains the reliable route."

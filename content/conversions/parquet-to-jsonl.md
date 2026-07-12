@@ -2,6 +2,7 @@
 slug: parquet-to-jsonl
 title: "Convert Parquet to JSONL (NDJSON) Online — Free & Private"
 description: "Convert Parquet files to newline-delimited JSON locally in your browser. One object per line, nested types preserved — no upload required."
+date: "2026-07-12"
 faq:
   - question: "What is the difference between JSONL and JSON?"
     answer: "JSONL (also called NDJSON) puts one complete JSON object on each line with no enclosing array. Tools can process it line by line without loading the whole file, which is why log pipelines, BigQuery and many ML tools prefer it."

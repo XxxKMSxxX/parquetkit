@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { ViewerTool } from "@/components/tool/loaders";
+import { JsonLd, softwareAppJsonLd } from "@/components/seo/JsonLd";
+
+const TITLE = "Online Parquet Viewer — Open Parquet Files in Your Browser";
+const DESCRIPTION =
+  "Free online Parquet file viewer. Inspect schema, metadata and rows locally in your browser. No upload, no signup — your data never leaves your device.";
 
 export const metadata: Metadata = {
-  title: "Online Parquet Viewer — Open Parquet Files in Your Browser",
-  description:
-    "Free online Parquet file viewer. Inspect schema, metadata and rows locally in your browser. No upload, no signup — your data never leaves your device.",
+  title: TITLE,
+  description: DESCRIPTION,
 };
 
 export default function ParquetViewerPage() {
@@ -57,6 +61,17 @@ export default function ParquetViewerPage() {
           </p>
         </div>
       </section>
+
+      <JsonLd
+        data={softwareAppJsonLd(
+          process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+          {
+            name: "ParquetKit — Parquet Viewer",
+            description: DESCRIPTION,
+            url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/parquet-viewer`,
+          },
+        )}
+      />
     </main>
   );
 }

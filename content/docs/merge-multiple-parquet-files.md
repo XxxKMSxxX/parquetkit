@@ -2,6 +2,7 @@
 slug: merge-multiple-parquet-files
 title: "How to Merge Multiple Parquet Files into One"
 description: "Combine several Parquet files into a single dataset with DuckDB SQL in your browser — including files whose schemas don't quite match — or with pyarrow."
+date: "2026-07-12"
 faq:
   - question: "Can I merge Parquet files without installing anything?"
     answer: "Yes. Drop the files into the browser SQL Workbench on this site and UNION them with one DuckDB query. Everything runs locally on WebAssembly; nothing is uploaded."

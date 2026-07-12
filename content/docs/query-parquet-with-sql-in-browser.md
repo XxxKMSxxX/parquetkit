@@ -2,6 +2,7 @@
 slug: query-parquet-with-sql-in-browser
 title: "Query Parquet Files with SQL — No Database Required"
 description: "Run real SQL against local Parquet and CSV files using DuckDB in the browser: joins, aggregates and window functions with zero setup."
+date: "2026-07-12"
 faq:
   - question: "Do I need to create tables or import data first?"
     answer: "No. Dropped files are queryable immediately by filename — SELECT * FROM 'sales.parquet' just works. There is no import step because DuckDB reads the file by reference."

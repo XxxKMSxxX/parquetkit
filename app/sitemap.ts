@@ -7,14 +7,23 @@ export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = ["", "/parquet-viewer", "/sql", "/docs"];
-  const conversionRoutes = loadConversions().map(
-    (entry) => `/convert/${entry.meta.slug}`,
-  );
-  const docRoutes = loadDocs().map((entry) => `/docs/${entry.meta.slug}`);
+  const conversionRoutes = loadConversions().map((entry) => ({
+    route: `/convert/${entry.meta.slug}`,
+    lastModified: entry.meta.date,
+  }));
+  const docRoutes = loadDocs().map((entry) => ({
+    route: `/docs/${entry.meta.slug}`,
+    lastModified: entry.meta.date,
+  }));
 
-  return [...staticRoutes, ...conversionRoutes, ...docRoutes].map((route) => ({
+  return [
+    ...staticRoutes.map((route) => ({ route, lastModified: undefined })),
+    ...conversionRoutes,
+    ...docRoutes,
+  ].map(({ route, lastModified }) => ({
     url: `${BASE}${route}`,
-    changeFrequency: "weekly",
+    changeFrequency: "weekly" as const,
     priority: route === "" ? 1 : 0.8,
+    ...(lastModified ? { lastModified } : {}),
   }));
 }

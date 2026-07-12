@@ -6,6 +6,8 @@ export const faqSchema = z.object({
   answer: z.string().min(20),
 });
 
+const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "YYYY-MM-DD形式の日付のみ許可");
+
 /** convert/[slug] 用コンテンツ。slugはエンジンがサポートする変換ペアに限定する */
 export const conversionContentSchema = z.object({
   slug: z.string().refine((slug) => parseConversionSlug(slug) !== null, {
@@ -14,6 +16,7 @@ export const conversionContentSchema = z.object({
   title: z.string().min(10).max(70),
   description: z.string().min(50).max(170),
   faq: z.array(faqSchema).min(2).max(8),
+  date: dateSchema,
 });
 
 /** docs/[slug] 用コンテンツ(ガイド記事) */
@@ -24,6 +27,7 @@ export const docContentSchema = z.object({
   title: z.string().min(10).max(70),
   description: z.string().min(50).max(170),
   faq: z.array(faqSchema).max(8).default([]),
+  date: dateSchema,
 });
 
 export type ConversionContent = z.infer<typeof conversionContentSchema>;

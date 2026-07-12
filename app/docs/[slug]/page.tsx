@@ -73,6 +73,7 @@ export default async function DocPage({
           slug,
           title: entry.meta.title,
           description: entry.meta.description,
+          datePublished: entry.meta.date,
         })}
       />
 

@@ -2,6 +2,7 @@
 slug: parquet-vs-csv
 title: "Parquet vs CSV: Size, Speed and When to Use Each"
 description: "A practical comparison of Parquet and CSV — file size, query speed, type safety and tool support — with concrete guidance on choosing."
+date: "2026-07-12"
 faq:
   - question: "How much smaller is Parquet than CSV?"
     answer: "Typically 5-10x smaller for tabular business data, thanks to columnar layout plus compression like ZSTD or Snappy. Highly repetitive columns compress even further."

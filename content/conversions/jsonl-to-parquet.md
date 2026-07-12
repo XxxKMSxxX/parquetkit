@@ -2,6 +2,7 @@
 slug: jsonl-to-parquet
 title: "Convert JSONL (NDJSON) to Parquet Online — Free & Private"
 description: "Convert newline-delimited JSON to typed, ZSTD-compressed Parquet locally in your browser. Schema is inferred automatically — no upload."
+date: "2026-07-12"
 faq:
   - question: "How is the schema inferred from JSONL?"
     answer: "DuckDB samples the file and unifies the fields and types it sees — numbers, strings, booleans, timestamps, arrays and nested objects. Fields missing on some lines become nullable columns."

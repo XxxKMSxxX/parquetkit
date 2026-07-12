@@ -23,15 +23,19 @@ export function faqJsonLd(faq: { question: string; answer: string }[]) {
   };
 }
 
-export function softwareAppJsonLd(site: string) {
+export function softwareAppJsonLd(
+  site: string,
+  overrides?: { name?: string; description?: string; url?: string },
+) {
   return {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "ParquetKit",
-    url: site,
+    name: overrides?.name ?? "ParquetKit",
+    url: overrides?.url ?? site,
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Any (web browser)",
     description:
+      overrides?.description ??
       "View, query and convert Parquet files entirely in your browser. No upload, no signup — files never leave your device.",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   };
@@ -42,6 +46,7 @@ export function techArticleJsonLd(args: {
   slug: string;
   title: string;
   description: string;
+  datePublished: string;
 }) {
   return {
     "@context": "https://schema.org",
@@ -49,6 +54,7 @@ export function techArticleJsonLd(args: {
     headline: args.title,
     description: args.description,
     url: `${args.site}/docs/${args.slug}`,
+    datePublished: args.datePublished,
     author: { "@type": "Organization", name: "ParquetKit" },
     publisher: { "@type": "Organization", name: "ParquetKit", url: args.site },
   };

@@ -2,6 +2,7 @@
 slug: csv-to-parquet
 title: "Convert CSV to Parquet Online — Free & Private"
 description: "Convert CSV files to Parquet with ZSTD compression, locally in your browser. No upload, no signup — typed columns are inferred automatically."
+date: "2026-07-12"
 faq:
   - question: "How are column types decided?"
     answer: "DuckDB samples the CSV and infers types automatically — integers, floats, dates, timestamps and booleans are detected. Anything ambiguous falls back to text."

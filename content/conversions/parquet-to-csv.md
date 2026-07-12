@@ -2,6 +2,7 @@
 slug: parquet-to-csv
 title: "Convert Parquet to CSV Online — Free & Private"
 description: "Convert Parquet files to CSV locally in your browser. Free, no upload, no file size limits — your data never leaves your device."
+date: "2026-07-12"
 faq:
   - question: "Is there a file size limit?"
     answer: "No hard limit is imposed by this tool. Because the file is read by reference inside your browser rather than uploaded, multi-gigabyte files work — the practical limit is your machine's memory for the converted output."
