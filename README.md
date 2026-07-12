@@ -6,6 +6,8 @@ No upload. No signup. No server. Every tool on [parquetkit.com](https://parquetk
 runs locally via WebAssembly, which makes it safe for confidential data and
 fast for multi-gigabyte files.
 
+![Opening the sample dataset in the Parquet Viewer — schema, metadata and rows appear instantly](.github/demo.gif)
+
 ## Tools
 
 | Tool | What it does |
