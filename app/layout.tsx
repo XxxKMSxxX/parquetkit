@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   ),
+  // 各ページの正規URLを現在のルートで解決(www/旧vercel.appドメインとの重複対策)
+  alternates: {
+    canonical: "./",
+  },
   title: {
     default: "ParquetKit — View, Query & Convert Parquet Files in Your Browser",
     template: "%s | ParquetKit",
