@@ -67,6 +67,21 @@ export default async function ConversionPage({
 
       <ConvertTool pair={pair} />
 
+      <div className="-mt-4 flex flex-wrap items-center gap-2 text-sm">
+        <span className="text-neutral-500 dark:text-neutral-400">Need a different conversion?</span>
+        {SUPPORTED_CONVERSIONS.filter(
+          (candidate) => conversionSlug(candidate) !== slug,
+        ).map((candidate) => (
+          <Link
+            key={conversionSlug(candidate)}
+            href={`/convert/${conversionSlug(candidate)}`}
+            className="rounded-full border border-neutral-300 px-3 py-1 transition-colors hover:border-sky-500/60 hover:text-sky-600 dark:border-neutral-700 dark:hover:border-sky-400/60 dark:hover:text-sky-400"
+          >
+            {FORMAT_LABELS[candidate.from]} → {FORMAT_LABELS[candidate.to]}
+          </Link>
+        ))}
+      </div>
+
       <details className="group rounded-lg border border-neutral-200 p-4 lg:hidden dark:border-neutral-800">
         <summary className="cursor-pointer text-sm font-semibold text-neutral-400">
           On this page
@@ -90,24 +105,6 @@ export default async function ConversionPage({
           </div>
         </aside>
       </div>
-
-      <section className="flex flex-col gap-3">
-        <h2 className="text-xl font-semibold">Other conversions</h2>
-        <ul className="flex flex-wrap gap-2 text-sm">
-          {SUPPORTED_CONVERSIONS.filter(
-            (candidate) => conversionSlug(candidate) !== slug,
-          ).map((candidate) => (
-            <li key={conversionSlug(candidate)}>
-              <Link
-                href={`/convert/${conversionSlug(candidate)}`}
-                className="rounded-full border border-neutral-300 px-3 py-1 hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
-              >
-                {FORMAT_LABELS[candidate.from]} → {FORMAT_LABELS[candidate.to]}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
     </main>
   );
 }
