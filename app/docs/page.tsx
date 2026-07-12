@@ -23,7 +23,7 @@ export default function DocsIndexPage() {
           <li key={doc.meta.slug}>
             <Link
               href={`/docs/${doc.meta.slug}`}
-              className="flex flex-col gap-1 rounded-lg border border-neutral-200 p-4 transition-colors hover:border-neutral-400 dark:border-neutral-800 dark:hover:border-neutral-600"
+              className="flex flex-col gap-1 rounded-lg border border-neutral-200 p-4 transition-colors hover:border-sky-500/60 dark:border-neutral-800 dark:hover:border-sky-400/60"
             >
               <h2 className="font-semibold">{doc.meta.title}</h2>
               <p className="text-sm text-neutral-600 dark:text-neutral-400">

@@ -28,3 +28,13 @@ test("parquet→csv conversion downloads a CSV with the correct contents", async
 
   await expect(page.getByTestId("convert-result")).toContainText("basic_snappy.csv");
 });
+
+test("converts the sample file in one click", async ({ page }) => {
+  await page.goto("/convert/parquet-to-csv?duckdb=self");
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByTestId("convert-sample").click();
+
+  await expect(page.getByTestId("convert-result")).toBeVisible({ timeout: 30_000 });
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("demo.csv");
+});

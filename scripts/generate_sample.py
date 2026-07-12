@@ -2,10 +2,12 @@
 # requires-python = ">=3.11"
 # dependencies = ["pyarrow>=17"]
 # ///
-"""Generate the demo Parquet behind the viewer's "Load a sample file" button.
+"""Generate the demo files behind the "try with a sample" buttons.
 
 Run: uv run scripts/generate_sample.py
-The output is committed to public/samples/demo.parquet (this script is the reproduction recipe).
+Outputs are committed to public/samples/ (this script is the reproduction recipe):
+- demo.parquet (viewer / SQL workbench / parquet→* converters)
+- demo.csv, demo.jsonl (csv→parquet / jsonl→parquet converters, 500-row subset)
 
 Lets first-time visitors try the product without a .parquet file at hand.
 Realistic order data with diverse logical types, so the schema view shows well.
@@ -72,3 +74,46 @@ table = pa.table(
 path = OUT / "demo.parquet"
 pq.write_table(table, path, compression="snappy", row_group_size=1_000)
 print(f"{path} ({path.stat().st_size:,} bytes, {ROWS} rows)")
+
+# CSV / JSONL subsets for the csv→parquet and jsonl→parquet converters
+import csv
+import json
+
+SUBSET = 500
+fields = [
+    "order_id", "ordered_at", "customer_id", "country", "product",
+    "quantity", "unit_price", "total_usd", "discount", "status", "is_gift",
+]
+
+
+def row(i: int) -> dict:
+    return {
+        "order_id": order_id[i],
+        "ordered_at": ordered_at[i].isoformat(),
+        "customer_id": customer_id[i],
+        "country": country[i],
+        "product": product[i],
+        "quantity": quantity[i],
+        "unit_price": str(unit_price[i]),
+        "total_usd": str(total_usd[i]),
+        "discount": str(discount[i]) if discount[i] is not None else "",
+        "status": status[i],
+        "is_gift": is_gift[i],
+    }
+
+
+csv_path = OUT / "demo.csv"
+with csv_path.open("w", newline="") as f:
+    writer = csv.DictWriter(f, fieldnames=fields)
+    writer.writeheader()
+    for i in range(SUBSET):
+        writer.writerow(row(i))
+print(f"{csv_path} ({csv_path.stat().st_size:,} bytes, {SUBSET} rows)")
+
+jsonl_path = OUT / "demo.jsonl"
+with jsonl_path.open("w") as f:
+    for i in range(SUBSET):
+        r = row(i)
+        r["discount"] = r["discount"] or None
+        f.write(json.dumps(r) + "\n")
+print(f"{jsonl_path} ({jsonl_path.stat().st_size:,} bytes, {SUBSET} rows)")

@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import Script from "next/script";
+import { NavLinks } from "@/components/NavLinks";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,6 +31,10 @@ export const metadata: Metadata = {
     "Free online Parquet viewer, SQL workbench and converter. Everything runs locally in your browser — your files never leave your device.",
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0a0a0a",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,10 +43,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <header className="border-b border-neutral-200 dark:border-neutral-800/80">
+        <header className="sticky top-0 z-40 border-b border-neutral-800/80 bg-neutral-950/70 backdrop-blur">
           <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
             <Link
               href="/"
@@ -61,46 +66,37 @@ export default function RootLayout({
               </svg>
               ParquetKit
             </Link>
-            <nav
-              aria-label="Tools"
-              className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-neutral-600 dark:text-neutral-400"
-            >
-              <Link href="/parquet-viewer" className="transition-colors hover:text-sky-600 dark:hover:text-sky-400">
-                Viewer
+            <NavLinks />
+          </div>
+        </header>
+        {children}
+        <footer className="border-t border-neutral-200 dark:border-neutral-800/80">
+          <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-8 text-xs text-neutral-500">
+            <nav aria-label="Footer" className="flex flex-wrap gap-x-5 gap-y-1">
+              <Link href="/parquet-viewer" className="transition-colors hover:text-sky-400">
+                Parquet Viewer
               </Link>
-              <Link href="/sql" className="transition-colors hover:text-sky-600 dark:hover:text-sky-400">
-                SQL
+              <Link href="/sql" className="transition-colors hover:text-sky-400">
+                SQL Workbench
               </Link>
-              <Link href="/convert/parquet-to-csv" className="transition-colors hover:text-sky-600 dark:hover:text-sky-400">
-                Convert
+              <Link href="/convert/parquet-to-csv" className="transition-colors hover:text-sky-400">
+                Converters
               </Link>
-              <Link href="/docs" className="transition-colors hover:text-sky-600 dark:hover:text-sky-400">
+              <Link href="/docs" className="transition-colors hover:text-sky-400">
                 Guides
               </Link>
               <a
                 href="https://github.com/XxxKMSxxX/parquetkit"
                 rel="noopener"
-                className="transition-colors hover:text-sky-600 dark:hover:text-sky-400"
+                className="transition-colors hover:text-sky-400"
               >
                 GitHub
               </a>
             </nav>
-          </div>
-        </header>
-        {children}
-        <footer className="border-t border-neutral-200 dark:border-neutral-800/80">
-          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2 px-6 py-8 text-xs text-neutral-500">
             <p>
               ParquetKit — every tool runs locally in your browser. Your files
-              never leave your device.
+              never leave your device. Open source under the MIT license.
             </p>
-            <a
-              href="https://github.com/XxxKMSxxX/parquetkit"
-              rel="noopener"
-              className="underline transition-colors hover:text-sky-600 dark:hover:text-sky-400"
-            >
-              Open source on GitHub
-            </a>
           </div>
         </footer>
         {/* Cloudflare Web Analytics: cookieless page-view beacon (the token is

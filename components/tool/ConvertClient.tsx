@@ -28,6 +28,13 @@ const ACCEPT: Record<ConversionPair["from"], string> = {
   jsonl: ".jsonl,.ndjson",
 };
 
+// Sample inputs served from /public — lets visitors try the converter without a file
+const SAMPLES: Partial<Record<ConversionPair["from"], string>> = {
+  parquet: "/samples/demo.parquet",
+  csv: "/samples/demo.csv",
+  jsonl: "/samples/demo.jsonl",
+};
+
 // The heavy conversion work runs inside DuckDB's own Web Worker,
 // so this call never blocks the main thread
 async function loadEngine() {
@@ -110,6 +117,37 @@ export function ConvertClient({ pair }: ConvertClientProps) {
         onFiles={onFiles}
         onInteract={prefetch}
       />
+
+      {SAMPLES[pair.from] ? (
+        <p className="-mt-1 text-center text-sm text-neutral-500">
+          No {pair.from.toUpperCase()} file handy?{" "}
+          <button
+            type="button"
+            disabled={status !== "idle"}
+            data-testid="convert-sample"
+            onClick={async () => {
+              setError(null);
+              const url = SAMPLES[pair.from];
+              if (!url) return;
+              try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`sample fetch failed (${res.status})`);
+                const blob = await res.blob();
+                await onFiles([
+                  new File([blob], `demo.${pair.from}`, {
+                    type: "application/octet-stream",
+                  }),
+                ]);
+              } catch (e) {
+                setError(e instanceof Error ? e.message : String(e));
+              }
+            }}
+            className="font-medium text-sky-600 underline underline-offset-2 transition-colors hover:text-sky-500 disabled:opacity-50 dark:text-sky-400 dark:hover:text-sky-300"
+          >
+            Convert a sample file
+          </button>
+        </p>
+      ) : null}
 
       {error ? (
         <p role="alert" className="font-mono text-sm text-red-600 dark:text-red-400">

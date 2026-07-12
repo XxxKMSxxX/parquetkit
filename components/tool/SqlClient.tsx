@@ -60,21 +60,54 @@ export function SqlClient() {
     }
   }, []);
 
-  const run = useCallback(async () => {
-    if (!sql.trim()) return;
+  const runSql = useCallback(async (statement: string) => {
+    if (!statement.trim()) return;
     setError(null);
     setStatus("running");
     try {
       const engine = await loadEngine();
       const db = await engine.initDuckDB(resolveBundleSource());
-      setResult(await engine.runQuery(db, sql));
+      setResult(await engine.runQuery(db, statement));
     } catch (e) {
       setResult(null);
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setStatus("idle");
     }
-  }, [sql]);
+  }, []);
+
+  const run = useCallback(() => runSql(sql), [runSql, sql]);
+
+  const SAMPLE_SQL = `SELECT country, count(*) AS orders, round(sum(total_usd), 2) AS revenue
+FROM 'demo.parquet'
+GROUP BY country
+ORDER BY revenue DESC;`;
+
+  const loadSample = useCallback(async () => {
+    setError(null);
+    setStatus("loading-engine");
+    try {
+      const res = await fetch("/samples/demo.parquet");
+      if (!res.ok) throw new Error(`sample fetch failed (${res.status})`);
+      const blob = await res.blob();
+      const file = new File([blob], "demo.parquet", {
+        type: "application/octet-stream",
+      });
+      const engine = await loadEngine();
+      const db = await engine.initDuckDB(resolveBundleSource());
+      await engine.registerFile(db, file.name, file);
+      setFiles((prev) =>
+        prev.some((f) => f.name === file.name)
+          ? prev
+          : [...prev, { name: file.name, size: file.size }],
+      );
+      setSql(SAMPLE_SQL);
+      await runSql(SAMPLE_SQL);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+      setStatus("idle");
+    }
+  }, [SAMPLE_SQL, runSql]);
 
   const downloadCsv = useCallback(() => {
     if (!result) return;
@@ -99,6 +132,19 @@ export function SqlClient() {
         onFiles={onFiles}
         onInteract={prefetch}
       />
+      <p className="-mt-3 text-center text-sm text-neutral-500">
+        No file handy?{" "}
+        <button
+          type="button"
+          disabled={status !== "idle"}
+          onClick={loadSample}
+          data-testid="sql-sample"
+          className="font-medium text-sky-600 underline underline-offset-2 transition-colors hover:text-sky-500 disabled:opacity-50 dark:text-sky-400 dark:hover:text-sky-300"
+        >
+          Query a sample dataset
+        </button>{" "}
+        — 5,000 e-commerce orders, aggregated by country.
+      </p>
 
       {files.length > 0 ? (
         <ul className="flex flex-wrap gap-2 text-xs" data-testid="registered-files">

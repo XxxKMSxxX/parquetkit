@@ -34,3 +34,12 @@ test("registers a file, runs SQL and shows the results", async ({ page }) => {
   await expect(page.getByTestId("data-table")).toContainText("100");
   await expect(page.getByTestId("data-table")).toContainText("user_000");
 });
+
+test("queries the sample dataset in one click", async ({ page }) => {
+  await page.goto("/sql?duckdb=self");
+  await page.getByTestId("sql-sample").click();
+
+  await expect(page.getByTestId("registered-files")).toContainText("demo.parquet");
+  await expect(page.getByTestId("sql-result")).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByTestId("data-table")).toContainText("US");
+});
