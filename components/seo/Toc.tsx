@@ -18,18 +18,45 @@ export function Toc({ items, testId = "toc" }: { items: TocItem[]; testId?: stri
       .filter((el): el is HTMLElement => el !== null);
     if (headings.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActiveId(visible[0].target.id);
-      },
-      // Treat the upper part of the viewport as the "current section" band
-      { rootMargin: "-80px 0px -70% 0px" },
-    );
-    headings.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    const update = () => {
+      const line = 96; // reading line just below the sticky header
+      const doc = document.documentElement;
+      const maxScroll = doc.scrollHeight - window.innerHeight;
+      const scrollY = window.scrollY;
+      const tops = headings.map((el) => el.getBoundingClientRect().top + scrollY);
+
+      // Headings in the last screenful can never rise above the reading line.
+      // Spread the remaining scroll distance evenly across them so the
+      // highlight still walks through every section and ends on the last one.
+      const firstStuck = tops.findIndex((top) => top - line > maxScroll);
+      if (firstStuck !== -1) {
+        const zoneStart = firstStuck === 0 ? 0 : tops[firstStuck - 1] - line;
+        const zone = maxScroll - zoneStart;
+        if (zone > 0 && scrollY >= zoneStart) {
+          const stuckCount = tops.length - firstStuck;
+          const steps = Math.floor(((scrollY - zoneStart) / zone) * (stuckCount + 1));
+          const idx = Math.min(firstStuck - 1 + steps, tops.length - 1);
+          setActiveId(idx >= 0 ? headings[idx].id : null);
+          return;
+        }
+      }
+
+      // The last heading above the reading line is the current section
+      let current: string | null = null;
+      for (let i = 0; i < tops.length; i++) {
+        if (tops[i] <= scrollY + line) current = headings[i].id;
+        else break;
+      }
+      setActiveId(current);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
   }, [items]);
 
   if (items.length === 0) return null;
