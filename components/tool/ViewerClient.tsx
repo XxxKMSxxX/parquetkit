@@ -282,7 +282,7 @@ export function ViewerClient() {
                   setPageSize(size);
                   void loadPage(loaded, newPage, size);
                 }}
-                className="rounded-md border border-neutral-300 bg-transparent px-2 py-1 dark:border-neutral-700 dark:bg-neutral-950"
+                className="rounded-md border border-neutral-300 bg-transparent px-2 py-1 text-base sm:text-sm dark:border-neutral-700 dark:bg-neutral-950"
               >
                 {PAGE_SIZES.map((size) => (
                   <option key={size} value={size}>
@@ -317,7 +317,8 @@ export function ViewerClient() {
                     );
                     if (target - 1 !== page) void loadPage(loaded, target - 1, pageSize);
                   }}
-                  className="w-14 rounded-md border border-neutral-300 bg-transparent px-1 py-1 text-center dark:border-neutral-700 dark:bg-neutral-950"
+                  // 16px on phones: below that iOS Safari force-zooms on focus
+                  className="w-14 rounded-md border border-neutral-300 bg-transparent px-1 py-1 text-center text-base sm:text-sm dark:border-neutral-700 dark:bg-neutral-950"
                 />
                 / {totalPages}
               </span>

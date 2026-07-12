@@ -268,15 +268,17 @@ ORDER BY revenue DESC;`;
           rows={6}
           spellCheck={false}
           placeholder="SELECT * FROM 'yourfile.parquet' LIMIT 100"
-          className="w-full resize-y rounded-lg border border-neutral-300 bg-white p-4 font-mono text-sm leading-7 transition-colors placeholder:text-neutral-400 focus:border-sky-500/60 dark:border-neutral-700 dark:bg-neutral-950 dark:placeholder:text-neutral-600 dark:focus:border-sky-400/60"
+          // 16px on phones: below that iOS Safari force-zooms the page on focus
+          className="w-full resize-y rounded-lg border border-neutral-300 bg-white p-4 font-mono text-base leading-7 transition-colors placeholder:text-neutral-400 focus:border-sky-500/60 sm:text-sm dark:border-neutral-700 dark:bg-neutral-950 dark:placeholder:text-neutral-600 dark:focus:border-sky-400/60"
         />
-        <div className="flex items-center gap-3">
+        {/* Run belongs to the editor (left); export acts on the result (right) */}
+        <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"
             data-testid="run-query"
             onClick={run}
             disabled={status !== "idle" || !sql.trim()}
-            className="rounded-md bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-500 disabled:opacity-50"
+            className="w-full rounded-md bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-500 disabled:opacity-50 sm:w-auto"
           >
             {status === "running"
               ? "Running…"
@@ -291,11 +293,11 @@ ORDER BY revenue DESC;`;
             to run
           </span>
           {result ? (
-            <>
+            <div className="flex flex-1 items-center gap-3 sm:ml-auto sm:flex-none">
               <button
                 type="button"
                 onClick={downloadCsv}
-                className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
+                className="flex-1 rounded-md border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50 sm:flex-none dark:border-neutral-700 dark:hover:bg-neutral-900"
               >
                 Download CSV
               </button>
@@ -310,11 +312,11 @@ ORDER BY revenue DESC;`;
                       setTimeout(() => setCopied(false), 2000);
                     });
                 }}
-                className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
+                className="flex-1 rounded-md border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50 sm:flex-none dark:border-neutral-700 dark:hover:bg-neutral-900"
               >
                 {copied ? "Copied!" : "Copy as CSV"}
               </button>
-            </>
+            </div>
           ) : null}
         </div>
       </div>
