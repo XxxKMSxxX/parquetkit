@@ -90,11 +90,32 @@ export async function readRows(
   rowStart: number,
   rowEnd: number,
 ): Promise<Record<string, unknown>[]> {
-  return parquetReadObjects({
+  const rows = await parquetReadObjects({
     file: handle.buffer,
     metadata: handle.metadata,
     compressors,
     rowStart,
     rowEnd,
   });
+
+  // hyparquet converts DECIMAL to a lossy float (211.98 → 211.98000000000002).
+  // The schema's scale restores the exact textual value, matching how the
+  // DuckDB engine renders decimals (as strings)
+  const decimalScales = new Map<string, number>();
+  for (const child of parquetSchema(handle.metadata).children) {
+    const element = child.element;
+    const logical = element.logical_type?.type ?? element.converted_type;
+    if (logical === "DECIMAL" && element.scale !== undefined) {
+      decimalScales.set(element.name, element.scale);
+    }
+  }
+  if (decimalScales.size > 0) {
+    for (const row of rows) {
+      for (const [name, scale] of decimalScales) {
+        const value = row[name];
+        if (typeof value === "number") row[name] = value.toFixed(scale);
+      }
+    }
+  }
+  return rows;
 }

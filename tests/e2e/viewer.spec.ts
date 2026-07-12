@@ -49,6 +49,10 @@ test("opens the sample file in one click", async ({ page }) => {
   await expect(page.getByTestId("metadata-panel")).toContainText("5,000");
   await expect(page.getByTestId("schema-panel")).toContainText("ordered_at");
   await expect(page.getByTestId("data-table")).toContainText("100001");
+
+  // DECIMAL columns render at the schema scale, not as lossy floats
+  await expect(page.getByTestId("data-table")).toContainText("211.98");
+  await expect(page.getByTestId("data-table")).not.toContainText("211.98000000000002");
 });
 
 test("pagination pack: page size, jump and arrow keys", async ({ page }) => {

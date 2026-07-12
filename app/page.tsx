@@ -84,7 +84,7 @@ export default function Home() {
           {/* Soft glow behind the app window */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -inset-8 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.12),transparent_65%)]"
+            className="pointer-events-none absolute -inset-x-4 -inset-y-8 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.12),transparent_65%)]"
           />
           {/* macOS-style window chrome */}
           <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-950/50 transition-colors group-hover:border-sky-500/50 dark:border-neutral-800 dark:bg-neutral-900 dark:group-hover:border-sky-400/50">

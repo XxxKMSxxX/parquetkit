@@ -71,6 +71,21 @@ export function Toc({ items, testId = "toc" }: { items: TocItem[]; testId?: stri
           <li key={item.id}>
             <a
               href={`#${item.id}`}
+              onClick={(e) => {
+                const el = document.getElementById(item.id);
+                if (!el) return;
+                e.preventDefault();
+                // Smooth-scroll via JS, not CSS scroll-behavior: a global CSS
+                // rule would also animate the router's scroll reset on
+                // navigation, which reads as a glitch
+                el.scrollIntoView({
+                  behavior: window.matchMedia("(prefers-reduced-motion: no-preference)")
+                    .matches
+                    ? "smooth"
+                    : "auto",
+                });
+                history.pushState(null, "", `#${item.id}`);
+              }}
               className={`-ml-px block border-l py-0.5 transition-colors ${
                 item.level === 3 ? "pl-7" : "pl-4"
               } ${

@@ -1,15 +1,32 @@
 "use client";
 
-import { useRef, useState, type HTMLAttributes } from "react";
+import { isValidElement, useRef, useState, type HTMLAttributes } from "react";
+
+// rehype-highlight puts "language-sql" on the inner <code>
+function languageOf(children: HTMLAttributes<HTMLPreElement>["children"]): string | null {
+  const child = Array.isArray(children) ? children[0] : children;
+  if (!isValidElement<{ className?: string }>(child)) return null;
+  return child.props.className?.match(/language-(\w+)/)?.[1] ?? null;
+}
 
 /** <pre> replacement for Markdown code fences with a hover copy button. */
 export function CodeBlock(props: HTMLAttributes<HTMLPreElement>) {
   const ref = useRef<HTMLPreElement>(null);
   const [copied, setCopied] = useState(false);
+  const language = languageOf(props.children);
 
   return (
     <div className="group relative">
       <pre ref={ref} {...props} />
+      {/* The language label sits where the copy button appears; they swap on hover */}
+      {language ? (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute right-2 top-2 rounded-md px-2 py-1 font-mono text-[10px] uppercase tracking-wide text-neutral-500 transition-opacity group-hover:opacity-0"
+        >
+          {language}
+        </span>
+      ) : null}
       <button
         type="button"
         aria-label="Copy code"

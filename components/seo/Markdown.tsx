@@ -16,7 +16,24 @@ export function Markdown({ children }: MarkdownProps) {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight, rehypeSlug]}
-        components={{ pre: CodeBlock }}
+        components={{
+          pre: CodeBlock,
+          // Mark links that leave the site with a small ↗
+          a: ({ href, children: linkChildren, ...rest }) => {
+            const external =
+              typeof href === "string" && /^https?:\/\//.test(href);
+            return (
+              <a href={href} {...(external ? { rel: "noopener" } : {})} {...rest}>
+                {linkChildren}
+                {external ? (
+                  <span aria-hidden="true" className="ml-0.5 inline-block text-[0.8em]">
+                    ↗
+                  </span>
+                ) : null}
+              </a>
+            );
+          },
+        }}
       >
         {children}
       </ReactMarkdown>

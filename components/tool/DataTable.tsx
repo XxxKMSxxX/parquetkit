@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { formatCell, toJson } from "@/lib/engine/format/cell";
 
 interface DataTableProps {
@@ -17,6 +17,25 @@ export function DataTable({ columns, rows, offset = 0 }: DataTableProps) {
   useEffect(() => () => {
     if (timer.current) clearTimeout(timer.current);
   }, []);
+
+  // Numbers read right-aligned with lined-up digits, like every data tool.
+  // DECIMAL values arrive as numeric strings (see runQuery), so a column is
+  // numeric when every sampled non-null value is a number, bigint or "12.5"
+  const numericColumns = useMemo(() => {
+    const isNumeric = (value: unknown) =>
+      typeof value === "number" ||
+      typeof value === "bigint" ||
+      (typeof value === "string" && /^-?\d+(\.\d+)?$/.test(value));
+    const sample = rows.slice(0, 50);
+    const numeric = new Set<string>();
+    for (const col of columns) {
+      const values = sample
+        .map((row) => row[col])
+        .filter((value) => value !== null && value !== undefined);
+      if (values.length > 0 && values.every(isNumeric)) numeric.add(col);
+    }
+    return numeric;
+  }, [columns, rows]);
 
   const copyCell = (key: string, value: string) => {
     void navigator.clipboard.writeText(value).then(() => {
@@ -35,7 +54,12 @@ export function DataTable({ columns, rows, offset = 0 }: DataTableProps) {
               #
             </th>
             {columns.map((col) => (
-              <th key={col} className="whitespace-nowrap px-3 py-2 font-semibold">
+              <th
+                key={col}
+                className={`whitespace-nowrap px-3 py-2 font-semibold ${
+                  numericColumns.has(col) ? "text-right" : ""
+                }`}
+              >
                 {col}
               </th>
             ))}
@@ -45,7 +69,7 @@ export function DataTable({ columns, rows, offset = 0 }: DataTableProps) {
           {rows.map((row, i) => (
             <tr
               key={offset + i}
-              className="border-b border-neutral-100 last:border-0 dark:border-neutral-900"
+              className="border-b border-neutral-100 transition-colors last:border-0 hover:bg-neutral-50/60 dark:border-neutral-900 dark:hover:bg-neutral-900/40"
             >
               <td
                 onClick={() => copyCell(`row:${offset + i}`, toJson(row))}
@@ -67,6 +91,8 @@ export function DataTable({ columns, rows, offset = 0 }: DataTableProps) {
                     key={col}
                     onClick={() => copyCell(key, value)}
                     className={`max-w-xs cursor-copy truncate whitespace-nowrap px-3 py-1.5 font-mono text-xs transition-colors ${
+                      numericColumns.has(col) ? "text-right tabular-nums" : ""
+                    } ${
                       copied
                         ? "bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300"
                         : "hover:bg-neutral-50 dark:hover:bg-neutral-900/60"
