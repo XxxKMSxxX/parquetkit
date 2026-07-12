@@ -36,8 +36,7 @@ export default async function DocPage({
     .slice(0, 3);
 
   return (
-    <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col px-6 py-12">
-      <div className="mx-auto flex w-full max-w-2xl flex-col gap-10">
+    <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-10 px-6 py-12">
       <header className="flex flex-col gap-3">
         <p className="text-sm">
           <Link href="/docs" className="text-neutral-500 underline">
@@ -72,7 +71,6 @@ export default async function DocPage({
           </ul>
         </section>
       ) : null}
-      </div>
     </main>
   );
 }

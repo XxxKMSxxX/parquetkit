@@ -48,8 +48,7 @@ export default async function ConversionPage({
   const to = FORMAT_LABELS[pair.to];
 
   return (
-    <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col px-6 py-12">
-      <div className="mx-auto flex w-full max-w-2xl flex-col gap-10">
+    <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-10 px-6 py-12">
       <header className="flex flex-col gap-3">
         <h1 className="text-3xl font-bold tracking-tight">
           Convert {from} to {to}
@@ -84,7 +83,6 @@ export default async function ConversionPage({
           ))}
         </ul>
       </section>
-      </div>
     </main>
   );
 }

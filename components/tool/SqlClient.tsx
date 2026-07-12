@@ -265,10 +265,10 @@ ORDER BY revenue DESC;`;
               void run();
             }
           }}
-          rows={5}
+          rows={6}
           spellCheck={false}
           placeholder="SELECT * FROM 'yourfile.parquet' LIMIT 100"
-          className="w-full rounded-lg border border-neutral-300 bg-white p-3 font-mono text-sm dark:border-neutral-700 dark:bg-neutral-950"
+          className="w-full resize-y rounded-lg border border-neutral-300 bg-white p-4 font-mono text-sm leading-7 transition-colors placeholder:text-neutral-400 focus:border-sky-500/60 dark:border-neutral-700 dark:bg-neutral-950 dark:placeholder:text-neutral-600 dark:focus:border-sky-400/60"
         />
         <div className="flex items-center gap-3">
           <button

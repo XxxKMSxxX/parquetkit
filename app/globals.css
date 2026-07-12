@@ -40,3 +40,33 @@ body {
     text-wrap: pretty;
   }
 }
+
+/* Syntax highlighting (rehype-highlight / highlight.js classes).
+   Muted palette anchored on the brand sky; baked into static HTML at build time. */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal {
+  color: #7dd3fc; /* sky-300 */
+}
+.hljs-string,
+.hljs-attr {
+  color: #86efac; /* green-300 */
+}
+.hljs-number,
+.hljs-symbol {
+  color: #fcd34d; /* amber-300 */
+}
+.hljs-comment,
+.hljs-quote {
+  color: #737373; /* neutral-500 */
+  font-style: italic;
+}
+.hljs-built_in,
+.hljs-title,
+.hljs-function {
+  color: #bae6fd; /* sky-200 */
+}
+.hljs-operator,
+.hljs-punctuation {
+  color: #a3a3a3; /* neutral-400 */
+}
