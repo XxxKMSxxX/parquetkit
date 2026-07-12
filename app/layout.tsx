@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import Script from "next/script";
-import { NavLinks } from "@/components/NavLinks";
+import { SiteHeader } from "@/components/SiteHeader";
 import { version } from "../package.json";
 import "./globals.css";
 
@@ -56,33 +56,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <header className="sticky top-0 z-40 border-b border-neutral-800/80 bg-neutral-950/70 backdrop-blur">
-          <div className="mx-auto flex w-full max-w-[1800px] flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
-            <Link
-              href="/"
-              className="group mr-auto flex items-center gap-2 font-semibold tracking-tight"
-            >
-              {/* Parquet block mark — the same motif as the favicon */}
-              <svg
-                viewBox="0 0 64 64"
-                className="h-5 w-5 transition-transform duration-300 group-hover:rotate-90 motion-reduce:transition-none"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <g transform="translate(32,32) rotate(45)">
-                  <rect x="-21" y="-21" width="19" height="19" rx="3.5" fill="#7dd3fc" />
-                  <rect x="2" y="-21" width="19" height="19" rx="3.5" fill="#38bdf8" />
-                  <rect x="-21" y="2" width="19" height="19" rx="3.5" fill="#0ea5e9" />
-                  <rect x="2" y="2" width="19" height="19" rx="3.5" fill="#0369a1" />
-                </g>
-              </svg>
-              <span>
-                Parquet<span className="text-sky-400">Kit</span>
-              </span>
-            </Link>
-            <NavLinks />
-          </div>
-        </header>
+        <SiteHeader />
         {children}
         <footer className="border-t border-neutral-200 dark:border-neutral-800/80">
           <div className="mx-auto w-full max-w-[1800px] px-6 py-12">
@@ -156,7 +130,7 @@ export default function RootLayout({
                 </div>
               </nav>
             </div>
-            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-neutral-200 pt-6 text-xs text-neutral-400 dark:border-neutral-800/80">
+            <div className="mt-10 flex flex-col gap-2 border-t border-neutral-200 pt-6 text-xs text-neutral-400 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 dark:border-neutral-800/80">
               <p>MIT © 2026 ParquetKit</p>
               <p>
                 Built with{" "}
@@ -179,7 +153,7 @@ export default function RootLayout({
               <a
                 href="https://github.com/XxxKMSxxX/parquetkit/releases"
                 rel="noopener"
-                className="ml-auto font-mono transition-colors hover:text-sky-600 dark:hover:text-sky-400"
+                className="font-mono transition-colors hover:text-sky-600 sm:ml-auto dark:hover:text-sky-400"
               >
                 v{version}
               </a>
