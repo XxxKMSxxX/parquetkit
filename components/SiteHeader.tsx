@@ -32,10 +32,12 @@ export function SiteHeader() {
         hidden ? "-translate-y-full focus-within:translate-y-0" : ""
       }`}
     >
-      <div className="mx-auto flex w-full max-w-[1800px] items-center gap-x-3 px-6 py-3 sm:gap-x-6">
+      {/* Phones get a deliberate two-row layout: the brand keeps its wordmark
+          on the first row, the nav gets the full width of the second */}
+      <div className="mx-auto flex w-full max-w-[1800px] flex-col gap-y-2 px-6 py-3 sm:flex-row sm:items-center sm:gap-x-6">
         <Link
           href="/"
-          className="group mr-auto flex items-center gap-2 font-semibold tracking-tight"
+          className="group flex items-center gap-2 self-start font-semibold tracking-tight sm:mr-auto sm:self-auto"
         >
           {/* Parquet block mark — the same motif as the favicon */}
           <svg
@@ -51,8 +53,7 @@ export function SiteHeader() {
               <rect x="2" y="2" width="19" height="19" rx="3.5" fill="#0369a1" />
             </g>
           </svg>
-          {/* The wordmark yields to the nav on phone widths */}
-          <span className="hidden sm:inline">
+          <span>
             Parquet<span className="text-sky-400">Kit</span>
           </span>
         </Link>
