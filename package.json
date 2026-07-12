@@ -24,6 +24,7 @@
     "@duckdb/duckdb-wasm": "1.33.1-dev57.0",
     "@sentry/nextjs": "^10.65.0",
     "apache-arrow": "^21.1.0",
+    "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
     "hyparquet": "^1.26.2",
     "hyparquet-compressors": "^1.1.1",
@@ -33,6 +34,7 @@
     "react-dom": "19.2.4",
     "react-markdown": "^10.1.0",
     "rehype-highlight": "^7.0.2",
+    "rehype-slug": "^6.0.0",
     "remark-gfm": "^4.0.1",
     "server-only": "^0.0.1",
     "zod": "^4.4.3"

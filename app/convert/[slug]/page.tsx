@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ConvertTool } from "@/components/tool/loaders";
 import { Faq } from "@/components/seo/Faq";
+import { Toc } from "@/components/seo/Toc";
 import { Markdown } from "@/components/seo/Markdown";
 import { findConversion, loadConversions } from "@/lib/content/loader";
+import { extractToc } from "@/lib/content/toc";
 import {
   SUPPORTED_CONVERSIONS,
   conversionSlug,
@@ -46,6 +48,12 @@ export default async function ConversionPage({
 
   const from = FORMAT_LABELS[pair.from];
   const to = FORMAT_LABELS[pair.to];
+  const toc = [
+    ...extractToc(entry.body),
+    ...(entry.meta.faq.length > 0
+      ? [{ id: "frequently-asked-questions", text: "Frequently asked questions", level: 2 as const }]
+      : []),
+  ];
 
   return (
     <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-10 px-6 py-12">
@@ -60,11 +68,20 @@ export default async function ConversionPage({
 
       <ConvertTool pair={pair} />
 
-      <div className="border-t border-neutral-200 pt-8 dark:border-neutral-800">
-        <Markdown>{entry.body}</Markdown>
-      </div>
+      <div className="lg:grid lg:grid-cols-[minmax(0,52rem)_16rem] lg:justify-between lg:gap-12">
+        <div className="flex min-w-0 flex-col gap-10">
+          <div className="border-t border-neutral-200 pt-8 dark:border-neutral-800">
+            <Markdown>{entry.body}</Markdown>
+          </div>
 
-      <Faq items={entry.meta.faq} />
+          <Faq items={entry.meta.faq} />
+        </div>
+        <aside className="hidden lg:block">
+          <div className="sticky top-20">
+            <Toc items={toc} />
+          </div>
+        </aside>
+      </div>
 
       <section className="flex flex-col gap-3">
         <h2 className="text-xl font-semibold">Other conversions</h2>

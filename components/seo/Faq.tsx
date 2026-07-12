@@ -8,7 +8,12 @@ export function Faq({ items }: FaqProps) {
   if (items.length === 0) return null;
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-xl font-semibold">Frequently asked questions</h2>
+      <h2
+        id="frequently-asked-questions"
+        className="scroll-mt-20 border-b border-neutral-200 pb-2 text-xl font-semibold dark:border-neutral-800"
+      >
+        Frequently asked questions
+      </h2>
       <dl className="flex flex-col gap-4">
         {items.map((item) => (
           <div key={item.question}>

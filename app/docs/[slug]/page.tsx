@@ -5,6 +5,8 @@ import { Faq } from "@/components/seo/Faq";
 import { ShareButtons } from "@/components/seo/ShareButtons";
 import { Markdown } from "@/components/seo/Markdown";
 import { findDoc, loadDocs } from "@/lib/content/loader";
+import { extractToc } from "@/lib/content/toc";
+import { Toc } from "@/components/seo/Toc";
 
 export function generateStaticParams(): { slug: string }[] {
   return loadDocs().map((entry) => ({ slug: entry.meta.slug }));
@@ -34,9 +36,16 @@ export default async function DocPage({
   const related = loadDocs()
     .filter((doc) => doc.meta.slug !== slug)
     .slice(0, 3);
+  const toc = [
+    ...extractToc(entry.body),
+    ...(entry.meta.faq.length > 0
+      ? [{ id: "frequently-asked-questions", text: "Frequently asked questions", level: 2 as const }]
+      : []),
+  ];
 
   return (
-    <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-10 px-6 py-12">
+    <main className="mx-auto w-full max-w-[1800px] flex-1 px-6 py-12 lg:grid lg:grid-cols-[minmax(0,52rem)_16rem] lg:justify-between lg:gap-12">
+      <div className="flex min-w-0 flex-col gap-10">
       <header className="flex flex-col gap-3">
         <p className="text-sm">
           <Link href="/docs" className="text-neutral-500 underline">
@@ -71,6 +80,12 @@ export default async function DocPage({
           </ul>
         </section>
       ) : null}
+      </div>
+      <aside className="hidden lg:block">
+        <div className="sticky top-20">
+          <Toc items={toc} />
+        </div>
+      </aside>
     </main>
   );
 }
