@@ -26,6 +26,7 @@ export function SqlClient() {
   const [status, setStatus] = useState<"idle" | "loading-engine" | "running">(
     "idle",
   );
+  const [copied, setCopied] = useState(false);
   const prefetched = useRef(false);
 
   const prefetch = useCallback(() => {
@@ -189,13 +190,30 @@ ORDER BY revenue DESC;`;
                 : "Run query"}
           </button>
           {result ? (
-            <button
-              type="button"
-              onClick={downloadCsv}
-              className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
-            >
-              Download CSV
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={downloadCsv}
+                className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
+              >
+                Download CSV
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!result) return;
+                  void navigator.clipboard
+                    .writeText(toCsv(result.columns, result.rows))
+                    .then(() => {
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    });
+                }}
+                className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
+              >
+                {copied ? "Copied!" : "Copy as CSV"}
+              </button>
+            </>
           ) : null}
         </div>
       </div>

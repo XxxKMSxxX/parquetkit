@@ -25,6 +25,7 @@ export function ViewerClient() {
   const [page, setPage] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [schemaCopied, setSchemaCopied] = useState(false);
 
   const loadPage = useCallback(async (file: LoadedFile, nextPage: number) => {
     const total = Number(file.handle.info.numRows);
@@ -167,7 +168,28 @@ export function ViewerClient() {
       </dl>
 
       <section className="flex flex-col gap-2" data-testid="schema-panel">
-        <h3 className="font-semibold">Schema</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold">Schema</h3>
+          <button
+            type="button"
+            onClick={() => {
+              const lines = [
+                "| Column | Physical type | Logical type |",
+                "|---|---|---|",
+                ...info.columns.map(
+                  (c) => `| ${c.name} | ${c.type} | ${c.logicalType ?? "—"} |`,
+                ),
+              ];
+              void navigator.clipboard.writeText(lines.join("\n")).then(() => {
+                setSchemaCopied(true);
+                setTimeout(() => setSchemaCopied(false), 2000);
+              });
+            }}
+            className="rounded-md border border-neutral-300 px-3 py-1 text-sm hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
+          >
+            {schemaCopied ? "Copied!" : "Copy schema"}
+          </button>
+        </div>
         <div className="overflow-x-auto rounded-lg border border-neutral-200 dark:border-neutral-800">
           <table className="w-full text-sm">
             <thead>

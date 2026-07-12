@@ -47,7 +47,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <header className="sticky top-0 z-40 border-b border-neutral-800/80 bg-neutral-950/70 backdrop-blur">
-          <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
+          <div className="mx-auto flex w-full max-w-[1800px] flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
             <Link
               href="/"
               className="mr-auto flex items-center gap-2 font-semibold tracking-tight"
@@ -71,7 +71,7 @@ export default function RootLayout({
         </header>
         {children}
         <footer className="border-t border-neutral-200 dark:border-neutral-800/80">
-          <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-6 py-8 text-xs text-neutral-500">
+          <div className="mx-auto flex w-full max-w-[1800px] flex-col gap-4 px-6 py-8 text-xs text-neutral-500">
             <nav aria-label="Footer" className="flex flex-wrap gap-x-5 gap-y-1">
               <Link href="/parquet-viewer" className="transition-colors hover:text-sky-400">
                 Parquet Viewer
