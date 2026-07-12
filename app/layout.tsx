@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -53,6 +54,13 @@ export default function RootLayout({
             Open source on GitHub
           </a>
         </footer>
+        {/* Cloudflare Web Analytics: cookieless page-view beacon (the token is
+            public by design — it only identifies the site, not an account) */}
+        <Script
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "9e2ab6392b8c4253982c56efd5e1ed8a"}'
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
