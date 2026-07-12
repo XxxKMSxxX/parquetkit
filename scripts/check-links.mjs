@@ -1,5 +1,5 @@
-// out/ 内の全HTMLを走査し、内部リンク(href/src)が実在するかを検証する。
-// コンテンツ追加で壊れたリンクが本番に出るのを防ぐ品質ゲート。
+// Scan every HTML file in out/ and verify that internal links (href/src) resolve.
+// Quality gate that keeps links broken by new content out of production.
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
 import path from "node:path";
 
@@ -22,7 +22,7 @@ function resolveTarget(url) {
 }
 
 if (!existsSync(OUT)) {
-  console.error("out/ がありません。先に pnpm build を実行してください。");
+  console.error("out/ not found. Run pnpm build first.");
   process.exit(1);
 }
 
@@ -39,8 +39,8 @@ for (const file of collectHtml(OUT)) {
 }
 
 if (errors.length > 0) {
-  console.error(`内部リンク切れ ${errors.length} 件:`);
+  console.error(`${errors.length} broken internal link(s):`);
   for (const e of errors) console.error(`  ${e}`);
   process.exit(1);
 }
-console.log("内部リンク切れなし");
+console.log("No broken internal links");

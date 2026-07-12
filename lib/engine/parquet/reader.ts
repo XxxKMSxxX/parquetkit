@@ -7,9 +7,9 @@ import { compressors as baseCompressors } from "hyparquet-compressors";
 import { decompressBlock } from "lz4js";
 import type { AsyncBuffer, FileMetaData } from "hyparquet";
 
-// hyparquet-compressors 1.1.1 のLZ4_RAW実装は、pyarrow等が生成する辞書ページで
-// "lz4 offset out of range" を投げる(lz4jsでは同一ページが正常にデコードできる
-// ことを確認済み=上流バグ)。lz4jsの実装で差し替える。
+// The LZ4_RAW implementation in hyparquet-compressors 1.1.1 throws "lz4 offset out of
+// range" on dictionary pages produced by pyarrow and friends (the same pages decode
+// fine with lz4js, i.e. an upstream bug). Swap in the lz4js implementation.
 const compressors = {
   ...baseCompressors,
   LZ4_RAW: (input: Uint8Array, outputLength: number): Uint8Array => {
@@ -40,7 +40,7 @@ export interface ParquetHandle {
   info: ParquetFileInfo;
 }
 
-/** Blob/File から hyparquet の AsyncBuffer を作る(全体をメモリに載せない)。 */
+/** Build a hyparquet AsyncBuffer from a Blob/File (never loads the whole file into memory). */
 export function asyncBufferFromBlob(blob: Blob): AsyncBuffer {
   return {
     byteLength: blob.size,
@@ -48,7 +48,7 @@ export function asyncBufferFromBlob(blob: Blob): AsyncBuffer {
   };
 }
 
-/** メタデータのみを読み、スキーマ・統計情報を要約する。データ本体は読まない。 */
+/** Read metadata only and summarize schema and statistics. Never reads the data itself. */
 export async function openParquet(buffer: AsyncBuffer): Promise<ParquetHandle> {
   const metadata = await parquetMetadataAsync(buffer);
   const tree = parquetSchema(metadata);
@@ -84,7 +84,7 @@ export async function openParquet(buffer: AsyncBuffer): Promise<ParquetHandle> {
   };
 }
 
-/** 指定行範囲をオブジェクト配列で読む(ページネーション用)。 */
+/** Read a row range as an array of objects (for pagination). */
 export async function readRows(
   handle: ParquetHandle,
   rowStart: number,

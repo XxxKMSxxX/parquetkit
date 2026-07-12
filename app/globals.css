@@ -25,7 +25,7 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
-/* キーボード操作の可視フォーカス(ブランドのsky系に統一) */
+/* Visible keyboard focus, unified on the brand sky color */
 :focus-visible {
   outline: 2px solid #38bdf8;
   outline-offset: 2px;

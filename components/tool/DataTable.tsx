@@ -5,7 +5,7 @@ import { formatCell } from "@/lib/engine/format/cell";
 interface DataTableProps {
   columns: string[];
   rows: Record<string, unknown>[];
-  /** 先頭行の行番号(ページネーション表示用、0始まり) */
+  /** Row number of the first row (0-based, shown for pagination) */
   offset?: number;
 }
 

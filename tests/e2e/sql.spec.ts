@@ -3,8 +3,8 @@ import { expect, test } from "@playwright/test";
 
 const FIXTURES = path.resolve(__dirname, "../fixtures");
 
-test("ファイルを登録してSQLを実行し結果が表示される", async ({ page }) => {
-  // ?duckdb=self でself-hostedバンドルを使用(CIの外部ネットワーク依存を排除)
+test("registers a file, runs SQL and shows the results", async ({ page }) => {
+  // ?duckdb=self uses the self-hosted bundles (no external network dependency in CI)
   await page.goto("/sql?duckdb=self");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("SQL Workbench");
 
@@ -16,13 +16,13 @@ test("ファイルを登録してSQLを実行し結果が表示される", async
     "basic_snappy.parquet",
   );
 
-  // デフォルトSQLが補完される
+  // The default SQL is filled in
   const editor = page.getByTestId("sql-editor");
   await expect(editor).toHaveValue(
     "SELECT * FROM 'basic_snappy.parquet' LIMIT 100",
   );
 
-  // 集計クエリに書き換えて実行
+  // Rewrite to an aggregate query and run it
   await editor.fill(
     "SELECT count(*)::INTEGER AS total, min(name) AS first_name FROM 'basic_snappy.parquet'",
   );

@@ -6,8 +6,8 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
-    // lib/engine/ はReact/DOM/Next非依存の純TS層。将来のnpm切り出し・CLI化と
-    // vitest(node)での直接テストを保証するため、UI系パッケージのimportを禁止する
+    // lib/engine/ is a pure TS layer with no React/DOM/Next dependency. UI imports are
+    // banned to keep it extractable as an npm package / CLI and directly testable in vitest (node)
     files: ["lib/engine/**/*.ts"],
     rules: {
       "no-restricted-imports": [
@@ -16,7 +16,7 @@ const eslintConfig = defineConfig([
           patterns: [
             {
               group: ["react", "react-dom", "react/*", "react-dom/*", "next", "next/*"],
-              message: "lib/engine/ はUI非依存の純TS層。React/Next への依存は禁止。",
+              message: "lib/engine/ is a UI-free pure TS layer. React/Next dependencies are banned.",
             },
           ],
         },
@@ -32,7 +32,7 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     "test-results/**",
     "playwright-report/**",
-    // self-host用にコピーされるDuckDB-WASMのvendorファイル(gitignore済み)
+    // DuckDB-WASM vendor files copied for self-hosting (gitignored)
     "public/duckdb/**",
   ]),
 ]);

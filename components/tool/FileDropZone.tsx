@@ -8,7 +8,7 @@ interface FileDropZoneProps {
   sublabel?: string;
   multiple?: boolean;
   onFiles: (files: File[]) => void;
-  /** ユーザーがファイル選択の動作を始めた時点で呼ばれる(WASMプリフェッチ用) */
+  /** Called as soon as the user starts picking a file (used to prefetch WASM) */
   onInteract?: () => void;
 }
 

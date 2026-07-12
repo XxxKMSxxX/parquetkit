@@ -1,4 +1,4 @@
-// vitest(vite)の ?url アセットimport用の型宣言
+// Type declarations for vitest (vite) ?url asset imports
 declare module "*.parquet?url" {
   const url: string;
   export default url;

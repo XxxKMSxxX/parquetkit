@@ -16,7 +16,7 @@ function asyncBufferFromFixture(name: string): AsyncBuffer {
 }
 
 describe("openParquet", () => {
-  it("スキーマとメタデータを要約する", async () => {
+  it("summarizes schema and metadata", async () => {
     const handle = await openParquet(asyncBufferFromFixture("basic_snappy.parquet"));
     expect(handle.info.numRows).toBe(100n);
     expect(handle.info.numRowGroups).toBe(1);
@@ -39,7 +39,7 @@ describe("openParquet", () => {
   });
 
   it.each(["snappy", "gzip", "zstd", "lz4", "none"])(
-    "%s圧縮のファイルを読める",
+    "reads %s-compressed files",
     async (codec) => {
       const handle = await openParquet(asyncBufferFromFixture(`basic_${codec}.parquet`));
       const rows = await readRows(handle, 0, 3);
@@ -50,7 +50,7 @@ describe("openParquet", () => {
     },
   );
 
-  it("複数row groupのファイルで行範囲を読める", async () => {
+  it("reads row ranges from a multi row-group file", async () => {
     const handle = await openParquet(asyncBufferFromFixture("multi_rowgroup.parquet"));
     expect(handle.info.numRows).toBe(5000n);
     expect(handle.info.numRowGroups).toBe(5);
@@ -58,12 +58,12 @@ describe("openParquet", () => {
     expect(rows).toHaveLength(3);
   });
 
-  it("空ファイルを開ける", async () => {
+  it("opens an empty file", async () => {
     const handle = await openParquet(asyncBufferFromFixture("empty.parquet"));
     expect(handle.info.numRows).toBe(0n);
   });
 
-  it("null・ネスト型を正しく返す", async () => {
+  it("returns nulls and nested types correctly", async () => {
     const handle = await openParquet(asyncBufferFromFixture("basic_snappy.parquet"));
     const rows = await readRows(handle, 0, 8);
     expect(rows[0].nullable).toBeNull();

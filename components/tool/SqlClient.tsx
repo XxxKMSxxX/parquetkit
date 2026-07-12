@@ -13,7 +13,7 @@ interface RegisteredFile {
   size: number;
 }
 
-/** DuckDBモジュールを遅延importする(初期表示のバンドルを軽く保つ) */
+/** Lazily import the DuckDB module (keeps the initial bundle light) */
 async function loadEngine() {
   return import("@/lib/engine/duckdb");
 }
@@ -134,7 +134,7 @@ export function SqlClient() {
             data-testid="run-query"
             onClick={run}
             disabled={status !== "idle" || !sql.trim()}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500 disabled:opacity-50"
+            className="rounded-md bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-500 disabled:opacity-50"
           >
             {status === "running"
               ? "Running…"

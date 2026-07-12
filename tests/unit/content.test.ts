@@ -8,7 +8,7 @@ import {
 } from "@/lib/content/schema";
 import { SUPPORTED_CONVERSIONS, conversionSlug } from "@/lib/engine/convert/jobs";
 
-// コンテンツ品質の安全網。このテストが落ちるコンテンツは本番に出ない。
+// Safety net for content quality. Content that fails these tests never reaches production.
 
 const CONTENT = path.resolve(__dirname, "../../content");
 
@@ -21,10 +21,10 @@ function listMd(dir: string): { name: string; raw: string }[] {
     }));
 }
 
-describe("conversionコンテンツ", () => {
+describe("conversion content", () => {
   const files = listMd("conversions");
 
-  it("全ファイルのfrontmatterがスキーマに適合し、slugとファイル名が一致する", () => {
+  it("all frontmatter matches the schema and slugs equal file names", () => {
     for (const file of files) {
       const { data } = matter(file.raw);
       const meta = conversionContentSchema.parse(data);
@@ -32,7 +32,7 @@ describe("conversionコンテンツ", () => {
     }
   });
 
-  it("サポートする全変換ペアにコンテンツが存在する", () => {
+  it("every supported conversion pair has content", () => {
     const slugs = files.map((file) => matter(file.raw).data.slug);
     for (const pair of SUPPORTED_CONVERSIONS) {
       expect(slugs).toContain(conversionSlug(pair));
@@ -40,8 +40,8 @@ describe("conversionコンテンツ", () => {
   });
 });
 
-describe("docsコンテンツ", () => {
-  it("全ファイルのfrontmatterがスキーマに適合し、slugとファイル名が一致する", () => {
+describe("docs content", () => {
+  it("all frontmatter matches the schema and slugs equal file names", () => {
     for (const file of listMd("docs")) {
       const { data } = matter(file.raw);
       const meta = docContentSchema.parse(data);
@@ -50,19 +50,19 @@ describe("docsコンテンツ", () => {
   });
 });
 
-describe("コンテンツの安全性", () => {
-  it("生HTMLタグ・スクリプトを含まない(react-markdownは描画しないが混入自体を禁止)", () => {
+describe("content safety", () => {
+  it("contains no raw HTML tags or scripts (react-markdown would not render them, but ban the injection itself)", () => {
     for (const dir of ["conversions", "docs"]) {
       for (const file of listMd(dir)) {
         expect(file.raw, file.name).not.toMatch(/<\s*(script|iframe|object|embed|form)/i);
         expect(file.raw, file.name).not.toMatch(/javascript:/i);
-        // HTMLタグ内のイベントハンドラ属性(onclick=等)のみ検出(SQLのON句は許可)
+        // Only detect event-handler attributes inside HTML tags (onclick= etc.); SQL ON clauses are allowed
         expect(file.raw, file.name).not.toMatch(/<[^>]*\son\w+\s*=/i);
       }
     }
   });
 
-  it("外部リンクはhttpsのみ、内部リンクは絶対パス", () => {
+  it("external links are https-only and internal links are absolute paths", () => {
     for (const dir of ["conversions", "docs"]) {
       for (const file of listMd(dir)) {
         const links = [...file.raw.matchAll(/\]\(([^)]+)\)/g)].map((m) => m[1]);

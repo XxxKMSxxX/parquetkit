@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 
 const FIXTURES = path.resolve(__dirname, "../fixtures");
 
-test("Parquetファイルを開いてスキーマ・メタデータ・データが表示される", async ({
+test("opens a Parquet file and shows schema, metadata and data", async ({
   page,
 }) => {
   await page.goto("/parquet-viewer");
@@ -16,22 +16,22 @@ test("Parquetファイルを開いてスキーマ・メタデータ・データ�
   const viewer = page.getByTestId("viewer-result");
   await expect(viewer).toBeVisible();
 
-  // メタデータ
+  // Metadata
   const metadata = page.getByTestId("metadata-panel");
   await expect(metadata).toContainText("100");
   await expect(metadata).toContainText("SNAPPY");
 
-  // スキーマ
+  // Schema
   const schema = page.getByTestId("schema-panel");
   await expect(schema).toContainText("unicode");
   await expect(schema).toContainText("created_at");
 
-  // データ(1ページ目)
+  // Data (first page)
   const table = page.getByTestId("data-table");
   await expect(table).toContainText("user_000");
   await expect(table).toContainText("日本語_0_🦆");
 
-  // ページネーション(multi_rowgroupで2ページ目へ)
+  // Pagination (to the second page via multi_rowgroup)
   await page.getByRole("button", { name: "Open another file" }).click();
   await page
     .getByTestId("file-input")
@@ -41,7 +41,7 @@ test("Parquetファイルを開いてスキーマ・メタデータ・データ�
   await expect(page.getByTestId("data-table")).toContainText("user_050");
 });
 
-test("サンプルファイルをワンクリックで開ける", async ({ page }) => {
+test("opens the sample file in one click", async ({ page }) => {
   await page.goto("/parquet-viewer");
   await page.getByRole("button", { name: "Load a sample file" }).click();
 

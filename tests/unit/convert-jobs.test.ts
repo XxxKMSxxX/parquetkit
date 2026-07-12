@@ -8,13 +8,13 @@ import {
 } from "@/lib/engine/convert/jobs";
 
 describe("conversionSlug / parseConversionSlug", () => {
-  it("全サポートペアがslugと相互変換できる", () => {
+  it("every supported pair round-trips through its slug", () => {
     for (const pair of SUPPORTED_CONVERSIONS) {
       expect(parseConversionSlug(conversionSlug(pair))).toEqual(pair);
     }
   });
 
-  it("未サポートのslugはnull", () => {
+  it("returns null for unsupported slugs", () => {
     expect(parseConversionSlug("parquet-to-xlsx")).toBeNull();
     expect(parseConversionSlug("json-to-parquet")).toBeNull();
     expect(parseConversionSlug("")).toBeNull();
@@ -30,7 +30,7 @@ describe("buildConversionSql", () => {
     );
   });
 
-  it("csv→parquet はZSTD圧縮", () => {
+  it("csv→parquet uses ZSTD compression", () => {
     expect(
       buildConversionSql({ from: "csv", to: "parquet" }, "in.csv", "out.parquet"),
     ).toBe(
@@ -38,7 +38,7 @@ describe("buildConversionSql", () => {
     );
   });
 
-  it("json出力はARRAY、jsonl出力はNDJSON", () => {
+  it("json output is ARRAY and jsonl output is NDJSON", () => {
     expect(
       buildConversionSql({ from: "parquet", to: "json" }, "a.parquet", "b.json"),
     ).toContain("FORMAT JSON, ARRAY true");
@@ -47,7 +47,7 @@ describe("buildConversionSql", () => {
     ).toMatch(/\(FORMAT JSON\)$/);
   });
 
-  it("ファイル名のシングルクォートをエスケープする", () => {
+  it("escapes single quotes in file names", () => {
     const sql = buildConversionSql(
       { from: "parquet", to: "csv" },
       "user's file.parquet",
@@ -58,7 +58,7 @@ describe("buildConversionSql", () => {
 });
 
 describe("outputFileMeta", () => {
-  it("拡張子とMIMEタイプを返す", () => {
+  it("returns the extension and MIME type", () => {
     expect(outputFileMeta("csv")).toEqual({ extension: "csv", mimeType: "text/csv" });
     expect(outputFileMeta("parquet").extension).toBe("parquet");
   });

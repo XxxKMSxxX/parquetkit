@@ -2,9 +2,9 @@ import * as Sentry from "@sentry/nextjs";
 
 const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
 
-// DSN未設定(ローカル・fork環境)では監視を無効化する。
-// ユーザーのファイル名・ファイル内容・クエリ文字列は絶対に送信しない
-// (「データはブラウザの外に出ない」という本サイトの約束を監視系にも適用する)。
+// Monitoring is disabled when the DSN is unset (local / fork environments).
+// User file names, file contents and query strings are never sent —
+// the site's promise that data never leaves the browser applies to monitoring too.
 if (dsn) {
   Sentry.init({
     dsn,

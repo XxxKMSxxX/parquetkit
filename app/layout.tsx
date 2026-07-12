@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   ),
-  // 各ページの正規URLを現在のルートで解決(www/旧vercel.appドメインとの重複対策)
+  // Resolve each page's canonical from its route (avoids duplicates across www and the old vercel.app domain)
   alternates: {
     canonical: "./",
   },
@@ -42,12 +42,12 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <header className="border-b border-neutral-200 dark:border-neutral-800/80">
-          <div className="mx-auto flex w-full max-w-4xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
+          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
             <Link
               href="/"
               className="mr-auto flex items-center gap-2 font-semibold tracking-tight"
             >
-              {/* カラムナーバー(ファビコンと同じモチーフ) */}
+              {/* Columnar bars — the same motif as the favicon */}
               <svg
                 viewBox="0 0 64 64"
                 className="h-5 w-5"
@@ -89,7 +89,7 @@ export default function RootLayout({
         </header>
         {children}
         <footer className="border-t border-neutral-200 dark:border-neutral-800/80">
-          <div className="mx-auto flex w-full max-w-4xl flex-wrap items-center justify-between gap-2 px-6 py-8 text-xs text-neutral-500">
+          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2 px-6 py-8 text-xs text-neutral-500">
             <p>
               ParquetKit — every tool runs locally in your browser. Your files
               never leave your device.

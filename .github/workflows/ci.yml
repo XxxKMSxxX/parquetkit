@@ -31,7 +31,7 @@ jobs:
       - name: Unit tests
         run: pnpm test:unit
 
-      # e2e(?duckdb=self)がout/duckdb/を参照するため、buildより前にコピーする
+      # e2e (?duckdb=self) reads from out/duckdb/, so copy it before the build
       - name: Copy DuckDB assets for self-hosted tests
         run: node scripts/copy-duckdb-assets.mjs
 

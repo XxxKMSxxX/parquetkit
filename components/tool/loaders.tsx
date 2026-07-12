@@ -10,8 +10,8 @@ function ToolSkeleton() {
   );
 }
 
-// ツールUIはWASM依存のためSSR不可。静的HTML(解説・FAQ)を先に返し、
-// hydration後にツール本体を差し込む
+// Tool UIs depend on WASM and cannot be server-rendered. Serve the static HTML
+// (explanations, FAQ) first, then mount the tool after hydration
 export const ViewerTool = dynamic(
   () => import("./ViewerClient").then((m) => m.ViewerClient),
   { ssr: false, loading: ToolSkeleton },

@@ -1,5 +1,8 @@
 # ParquetKit
 
+[![CI](https://github.com/XxxKMSxxX/parquetkit/actions/workflows/ci.yml/badge.svg)](https://github.com/XxxKMSxxX/parquetkit/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
 **View, query and convert Parquet files — entirely in your browser.**
 
 No upload. No signup. No server. Every tool on [parquetkit.com](https://parquetkit.com)

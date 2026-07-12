@@ -55,8 +55,8 @@ export default function Home() {
   const docs = loadDocs();
 
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-12 px-6 py-16">
-      <section className="grid items-center gap-8 lg:grid-cols-[1fr_minmax(0,460px)]">
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-12 px-6 py-16">
+      <section className="grid items-center gap-8 lg:grid-cols-[1fr_minmax(0,560px)]">
         <div className="flex flex-col gap-4">
           <h1 className="max-w-2xl text-4xl font-bold tracking-tight">
             Work with Parquet files, entirely in your browser

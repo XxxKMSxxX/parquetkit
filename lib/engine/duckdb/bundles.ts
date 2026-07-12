@@ -3,11 +3,11 @@ import * as duckdb from "@duckdb/duckdb-wasm";
 export type BundleSource = "cdn" | "self-hosted";
 
 /**
- * DuckDB-WASMバンドルの取得先。
- * - cdn: jsDelivr公式バンドル。本番用(Vercelの帯域無料枠を温存する)。
- *   静的アセットの取得のみで、ユーザーデータは一切外部送信されない。
- * - self-hosted: /public/duckdb/ 配下。CI・vitest browser用(jsDelivr起因のflakeを排除)。
- *   scripts/copy-duckdb-assets.mjs でnode_modulesからコピーする。
+ * Where DuckDB-WASM bundles are fetched from.
+ * - cdn: official jsDelivr bundles. Used in production (spares Vercel's free bandwidth).
+ *   Only static assets are fetched — user data is never sent anywhere.
+ * - self-hosted: under /public/duckdb/. For CI / vitest browser (removes jsDelivr-induced flakes).
+ *   Copied from node_modules by scripts/copy-duckdb-assets.mjs.
  */
 export function getBundles(source: BundleSource): duckdb.DuckDBBundles {
   if (source === "self-hosted") {

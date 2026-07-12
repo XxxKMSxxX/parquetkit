@@ -1,8 +1,8 @@
 import { expect, it } from "vitest";
 
-// エンジン層が前提とするブラウザ機能の存在確認。
-// P1でDuckDB-WASM/hyparquetの統合テストがここに追加される。
-it("WASM実行に必要なブラウザAPIが存在する", () => {
+// Verifies that the browser features the engine layer relies on exist.
+// The DuckDB-WASM / hyparquet integration tests build on this environment.
+it("has the browser APIs required to run WASM", () => {
   expect(typeof WebAssembly).toBe("object");
   expect(typeof Worker).toBe("function");
   expect(typeof File).toBe("function");

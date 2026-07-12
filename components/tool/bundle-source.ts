@@ -1,8 +1,8 @@
 import type { BundleSource } from "@/lib/engine/duckdb/bundles";
 
 /**
- * DuckDBバンドルの取得先を決める。通常はCDN(jsDelivr)。
- * e2eテストは `?duckdb=self` でself-hostedに切り替え、外部ネットワーク依存を排除する。
+ * Decides where DuckDB bundles are fetched from. Default is the CDN (jsDelivr).
+ * e2e tests switch to self-hosted via `?duckdb=self` to remove the external network dependency.
  */
 export function resolveBundleSource(): BundleSource {
   if (typeof window === "undefined") return "cdn";

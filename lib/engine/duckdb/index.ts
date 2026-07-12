@@ -10,9 +10,9 @@ export interface QueryResult {
 let instance: Promise<duckdb.AsyncDuckDB> | null = null;
 
 /**
- * DuckDB-WASMを遅延初期化するシングルトン。
- * シングルスレッドモード(COOP/COEP不要)。DuckDB自体が専用Worker内で動くため
- * メインスレッドはブロックされない。
+ * Lazily initialized DuckDB-WASM singleton.
+ * Single-threaded mode (no COOP/COEP required). DuckDB runs inside its own worker,
+ * so the main thread is never blocked.
  */
 export function initDuckDB(source: BundleSource = "cdn"): Promise<duckdb.AsyncDuckDB> {
   instance ??= (async () => {
@@ -20,9 +20,9 @@ export function initDuckDB(source: BundleSource = "cdn"): Promise<duckdb.AsyncDu
     if (!bundle.mainWorker) {
       throw new Error("DuckDB-WASM: no worker bundle selected");
     }
-    // クロスオリジン(jsDelivr)のworker JSは直接 new Worker() できないため
-    // blob URLでラップする(DuckDB公式ドキュメントの手法)。
-    // blob URLワーカー内では相対パスが解決できないため絶対URLにする
+    // Cross-origin (jsDelivr) worker JS cannot be passed to new Worker() directly,
+    // so wrap it in a blob URL (the approach from DuckDB's official docs).
+    // Relative paths do not resolve inside blob-URL workers, so use absolute URLs
     const workerAbsoluteUrl = new URL(
       bundle.mainWorker,
       globalThis.location.href,
@@ -35,7 +35,7 @@ export function initDuckDB(source: BundleSource = "cdn"): Promise<duckdb.AsyncDu
     try {
       const worker = new Worker(workerUrl);
       const db = new duckdb.AsyncDuckDB(new duckdb.VoidLogger(), worker);
-      // wasm本体のパスもblobワーカー内で解決されるため絶対URL必須
+      // The wasm binary path is also resolved inside the blob worker — absolute URL required
       const mainModuleUrl = new URL(
         bundle.mainModule,
         globalThis.location.href,
@@ -49,7 +49,7 @@ export function initDuckDB(source: BundleSource = "cdn"): Promise<duckdb.AsyncDu
   return instance;
 }
 
-/** テスト用: シングルトンを破棄する。 */
+/** Test helper: dispose the singleton. */
 export async function resetDuckDB(): Promise<void> {
   if (instance) {
     const db = await instance.catch(() => null);
@@ -58,7 +58,7 @@ export async function resetDuckDB(): Promise<void> {
   }
 }
 
-/** ローカルFileをDuckDBの仮想ファイルシステムに登録する(コピーせず参照)。 */
+/** Register a local File into DuckDB's virtual file system (by reference, no copy). */
 export async function registerFile(
   db: duckdb.AsyncDuckDB,
   name: string,
@@ -76,7 +76,7 @@ export async function dropFile(db: duckdb.AsyncDuckDB, name: string): Promise<vo
   await db.dropFile(name);
 }
 
-/** SQLを実行し、プレーンなJSオブジェクトの配列で返す。 */
+/** Run SQL and return the rows as plain JS objects. */
 export async function runQuery(
   db: duckdb.AsyncDuckDB,
   sql: string,
@@ -93,8 +93,8 @@ export async function runQuery(
 }
 
 /**
- * SQLを実行して結果をDuckDB内のファイルへCOPYし、その内容を取り出す。
- * 変換ツールの中核。呼び出し側でBlob化してダウンロードさせる。
+ * Run SQL, COPY the result to a file inside DuckDB, and read the bytes back.
+ * The core of the converters. Callers wrap the bytes in a Blob for download.
  */
 export async function runCopy(
   db: duckdb.AsyncDuckDB,

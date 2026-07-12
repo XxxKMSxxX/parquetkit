@@ -1,5 +1,5 @@
 declare module "lz4js" {
-  /** LZ4ブロックを伸長し、書き込んだバイト数を返す。 */
+  /** Decompress an LZ4 block and return the number of bytes written. */
   export function decompressBlock(
     src: Uint8Array,
     dst: Uint8Array,

@@ -19,7 +19,7 @@ const FORMAT_LABELS: Record<string, string> = {
 };
 
 export function generateStaticParams(): { slug: string }[] {
-  // content/conversions/ 駆動。schemaのrefineでエンジン未サポートslugはビルド時に弾かれる
+  // Driven by content/conversions/. The schema refine rejects engine-unsupported slugs at build time
   return loadConversions().map((entry) => ({ slug: entry.meta.slug }));
 }
 
@@ -48,7 +48,7 @@ export default async function ConversionPage({
   const to = FORMAT_LABELS[pair.to];
 
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-10 px-6 py-12">
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-10 px-6 py-12">
       <header className="flex flex-col gap-3">
         <h1 className="text-3xl font-bold tracking-tight">
           Convert {from} to {to}

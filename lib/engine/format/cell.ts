@@ -1,4 +1,4 @@
-/** テーブルセル表示用に任意の値を文字列化する。 */
+/** Stringify an arbitrary value for table-cell display. */
 export function formatCell(value: unknown): string {
   if (value === null || value === undefined) return "";
   if (typeof value === "bigint") return value.toString();
@@ -11,7 +11,7 @@ export function formatCell(value: unknown): string {
   return String(value);
 }
 
-/** クエリ結果をCSV文字列にする(RFC 4180準拠のクォート)。 */
+/** Serialize query results to a CSV string (RFC 4180 quoting). */
 export function toCsv(columns: string[], rows: Record<string, unknown>[]): string {
   const escape = (raw: string): string =>
     /[",\n\r]/.test(raw) ? `"${raw.replaceAll('"', '""')}"` : raw;

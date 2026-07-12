@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { formatCell, toCsv } from "@/lib/engine/format/cell";
 
 describe("formatCell", () => {
-  it("プリミティブと特殊型を文字列化する", () => {
+  it("stringifies primitives and special types", () => {
     expect(formatCell(null)).toBe("");
     expect(formatCell(undefined)).toBe("");
     expect(formatCell(42n)).toBe("42");
@@ -13,13 +13,13 @@ describe("formatCell", () => {
     );
   });
 
-  it("ネスト構造はJSON化し、内部のBigIntも文字列にする", () => {
+  it("serializes nested structures to JSON, stringifying inner BigInts", () => {
     expect(formatCell({ a: 1n, b: ["x"] })).toBe('{"a":"1","b":["x"]}');
   });
 });
 
 describe("toCsv", () => {
-  it("ヘッダ+データ行をCRLFで結合する", () => {
+  it("joins the header and data rows with CRLF", () => {
     const csv = toCsv(
       ["id", "name"],
       [

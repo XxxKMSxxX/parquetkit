@@ -17,15 +17,15 @@ async function fixtureFile(url: string, name: string, type = ""): Promise<File> 
   return new File([blob], name, { type });
 }
 
-// CI/ローカルともself-hostedバンドル(public/duckdb/)を使いjsDelivr起因のflakeを避ける
+// Both CI and local use the self-hosted bundles (public/duckdb/) to avoid jsDelivr-induced flakes
 const dbPromise = initDuckDB("self-hosted");
 
 afterAll(async () => {
   await resetDuckDB();
 });
 
-describe("DuckDB-WASM統合", () => {
-  it("ローカルParquetファイルにSQLを実行できる", async () => {
+describe("DuckDB-WASM integration", () => {
+  it("runs SQL against a local Parquet file", async () => {
     const db = await dbPromise;
     const file = await fixtureFile(parquetFixtureUrl, "basic.parquet");
     await registerFile(db, "basic.parquet", file);
@@ -47,7 +47,7 @@ describe("DuckDB-WASM統合", () => {
     await dropFile(db, "basic.parquet");
   });
 
-  it("csv→parquet変換の出力が正しいParquetになる", async () => {
+  it("csv→parquet conversion produces a valid Parquet file", async () => {
     const db = await dbPromise;
     const file = await fixtureFile(csvFixtureUrl, "simple.csv", "text/csv");
     await registerFile(db, "simple.csv", file);
@@ -60,7 +60,7 @@ describe("DuckDB-WASM統合", () => {
     const bytes = await runCopy(db, sql, "out.parquet");
     expect(bytes.byteLength).toBeGreaterThan(0);
 
-    // 出力をhyparquetで読み戻して検証(エンジンをまたいだラウンドトリップ)
+    // Read the output back with hyparquet (a round trip across engines)
     const blob = new Blob([bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer]);
     const handle = await openParquet(asyncBufferFromBlob(blob));
     expect(handle.info.numRows).toBe(100n);
@@ -74,7 +74,7 @@ describe("DuckDB-WASM統合", () => {
     await dropFile(db, "simple.csv");
   });
 
-  it("parquet→csv変換の出力にヘッダとデータが含まれる", async () => {
+  it("parquet→csv conversion output contains the header and data", async () => {
     const db = await dbPromise;
     const file = await fixtureFile(parquetFixtureUrl, "basic2.parquet");
     await registerFile(db, "basic2.parquet", file);

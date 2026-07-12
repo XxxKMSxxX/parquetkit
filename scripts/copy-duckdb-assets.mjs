@@ -1,5 +1,5 @@
-// DuckDB-WASMバンドルをnode_modulesからpublic/duckdb/へコピーする。
-// CI・vitest browserでjsDelivrに依存しないためのself-host用(public/duckdbはgitignore)。
+// Copy the DuckDB-WASM bundles from node_modules to public/duckdb/.
+// Self-hosting for CI / vitest browser so they never depend on jsDelivr (public/duckdb is gitignored).
 import { copyFileSync, mkdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";

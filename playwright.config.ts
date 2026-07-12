@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// e2e は静的エクスポート成果物(out/)に対して実行する。
-// 本番と同じ配信形態でテストすることで、SSR誤importやパス問題をCIで検知する。
+// e2e runs against the static export artifact (out/).
+// Testing the same delivery form as production catches bad server imports and path issues in CI.
 export default defineConfig({
   testDir: "tests/e2e",
   fullyParallel: true,
@@ -12,7 +12,7 @@ export default defineConfig({
     baseURL: "http://localhost:4173",
     trace: "on-first-retry",
   },
-  // CIはchromiumのみ(--project=chromium)。firefox/webkitはリリース前のローカル確認用
+  // CI runs chromium only (--project=chromium); firefox/webkit are for local pre-release checks
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
     { name: "firefox", use: { ...devices["Desktop Firefox"] } },

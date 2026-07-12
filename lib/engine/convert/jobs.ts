@@ -6,7 +6,7 @@ export interface ConversionPair {
   to: DataFormat;
 }
 
-/** サポートする変換ペア。convert/[slug] ページと1:1対応する。 */
+/** Supported conversion pairs. Maps 1:1 to the convert/[slug] pages. */
 export const SUPPORTED_CONVERSIONS: readonly ConversionPair[] = [
   { from: "parquet", to: "csv" },
   { from: "parquet", to: "json" },
@@ -24,12 +24,12 @@ export function parseConversionSlug(slug: string): ConversionPair | null {
   return match ?? null;
 }
 
-/** DuckDBのSQL文字列リテラル用エスケープ。 */
+/** Escaping for DuckDB SQL string literals. */
 function quoteLiteral(value: string): string {
   return `'${value.replaceAll("'", "''")}'`;
 }
 
-/** 入力ファイルを読むテーブル関数式を生成する。 */
+/** Build the table-function expression that reads the input file. */
 export function buildReadExpression(format: DataFormat, fileName: string): string {
   const file = quoteLiteral(fileName);
   switch (format) {
@@ -43,13 +43,13 @@ export function buildReadExpression(format: DataFormat, fileName: string): strin
   }
 }
 
-/** 出力フォーマットのCOPYオプションを生成する。 */
+/** Build the COPY options for the output format. */
 export function buildCopyOptions(to: DataFormat): string {
   switch (to) {
     case "csv":
       return "FORMAT CSV, HEADER";
     case "json":
-      // JSON配列として出力(jsonlとの違い)
+      // Output as a JSON array (this is the difference from jsonl)
       return "FORMAT JSON, ARRAY true";
     case "jsonl":
       return "FORMAT JSON";
@@ -58,7 +58,7 @@ export function buildCopyOptions(to: DataFormat): string {
   }
 }
 
-/** 変換ジョブ全体のCOPY文を生成する。 */
+/** Build the full COPY statement for a conversion job. */
 export function buildConversionSql(
   pair: ConversionPair,
   inputFileName: string,
@@ -69,7 +69,7 @@ export function buildConversionSql(
   return `COPY (SELECT * FROM ${read}) TO ${quoteLiteral(outputFileName)} (${options})`;
 }
 
-/** 出力ファイルの拡張子とMIMEタイプ。ダウンロード時に使用する。 */
+/** Output file extension and MIME type, used for the download. */
 export function outputFileMeta(to: DataFormat): { extension: string; mimeType: string } {
   switch (to) {
     case "csv":

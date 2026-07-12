@@ -28,8 +28,8 @@ const ACCEPT: Record<ConversionPair["from"], string> = {
   jsonl: ".jsonl,.ndjson",
 };
 
-// 変換の重い処理はDuckDB自身のWeb Worker内で実行されるため、
-// ここでの呼び出しがメインスレッドをブロックすることはない
+// The heavy conversion work runs inside DuckDB's own Web Worker,
+// so this call never blocks the main thread
 async function loadEngine() {
   return import("@/lib/engine/duckdb");
 }
@@ -81,7 +81,7 @@ export function ConvertClient({ pair }: ConvertClientProps) {
           return { url, fileName, inputSize: file.size, outputSize: blob.size };
         });
 
-        // 自動ダウンロード開始
+        // Trigger the automatic download
         const anchor = document.createElement("a");
         anchor.href = url;
         anchor.download = fileName;

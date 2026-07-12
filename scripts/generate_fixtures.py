@@ -2,10 +2,10 @@
 # requires-python = ">=3.11"
 # dependencies = ["pyarrow>=17"]
 # ///
-"""テスト用Parquet/CSV/JSONL fixtureを生成する。
+"""Generate the Parquet/CSV/JSONL fixtures used by tests.
 
-実行: uv run scripts/generate_fixtures.py
-生成物は tests/fixtures/ にコミットする(再現手順としてこのスクリプトを保存)。
+Run: uv run scripts/generate_fixtures.py
+The output is committed to tests/fixtures/ (this script is the reproduction recipe).
 """
 
 import datetime
@@ -23,7 +23,7 @@ ROWS = 100
 
 
 def base_table() -> pa.Table:
-    """主要な論理型を網羅した基本テーブル。"""
+    """Base table covering the major logical types."""
     return pa.table(
         {
             "id": pa.array(range(ROWS), type=pa.int64()),
@@ -65,8 +65,8 @@ def base_table() -> pa.Table:
 def main() -> None:
     table = base_table()
 
-    # 各圧縮コーデック(hyparquet-compressors / DuckDB両対応の範囲)。
-    # "lz4"(レガシーHadoop LZ4)はhyparquet非対応のため、現行標準のlz4_rawを使う
+    # Every compression codec supported by both hyparquet-compressors and DuckDB.
+    # "lz4" (legacy Hadoop LZ4) is unsupported by hyparquet, so use the current-standard lz4_raw
     for label, codec in [
         ("snappy", "snappy"),
         ("gzip", "gzip"),
@@ -76,14 +76,14 @@ def main() -> None:
     ]:
         pq.write_table(table, FIXTURES / f"basic_{label}.parquet", compression=codec)
 
-    # 複数row group(ページネーション検証用)
-    big = pa.concat_tables([table] * 50)  # 5,000行
+    # Multiple row groups (for pagination tests)
+    big = pa.concat_tables([table] * 50)  # 5,000 rows
     pq.write_table(big, FIXTURES / "multi_rowgroup.parquet", row_group_size=1000)
 
-    # 空テーブル
+    # Empty table
     pq.write_table(table.slice(0, 0), FIXTURES / "empty.parquet")
 
-    # 変換元CSV / JSONL
+    # Source CSV / JSONL for the converters
     simple = table.select(["id", "score", "name", "active"])
     import pyarrow.csv as pacsv
 

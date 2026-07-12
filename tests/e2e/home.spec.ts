@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("トップページが表示され主要ツールへのリンクがある", async ({ page }) => {
+test("home page renders with links to the main tools", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle(/ParquetKit/);
   await expect(

@@ -1,7 +1,7 @@
 name: Content auto-merge
 
-# ドキュメント(content/**)のみを変更するPRは、CI全パスを条件に自動マージする。
-# コードに1ファイルでも触れるPRは対象外(通常レビュー)。
+# PRs that only touch content/** are auto-merged once the full CI passes.
+# PRs that touch even one code file are excluded (regular review).
 
 on:
   pull_request:

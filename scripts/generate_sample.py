@@ -2,13 +2,13 @@
 # requires-python = ">=3.11"
 # dependencies = ["pyarrow>=17"]
 # ///
-"""ビューアの「Load a sample file」用デモParquetを生成する。
+"""Generate the demo Parquet behind the viewer's "Load a sample file" button.
 
-実行: uv run scripts/generate_sample.py
-生成物は public/samples/demo.parquet にコミットする(再現手順としてこのスクリプトを保存)。
+Run: uv run scripts/generate_sample.py
+The output is committed to public/samples/demo.parquet (this script is the reproduction recipe).
 
-初見の訪問者が手元に.parquetを持っていなくても製品を体験できるようにするのが目的。
-schema表示が映えるよう、logical typeが多様な現実的い注文データにしてある。
+Lets first-time visitors try the product without a .parquet file at hand.
+Realistic order data with diverse logical types, so the schema view shows well.
 """
 
 import datetime

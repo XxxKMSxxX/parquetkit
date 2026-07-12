@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 
 const FIXTURES = path.resolve(__dirname, "../fixtures");
 
-test("parquet→csv変換でダウンロードされたCSVの内容が正しい", async ({ page }) => {
+test("parquet→csv conversion downloads a CSV with the correct contents", async ({ page }) => {
   await page.goto("/convert/parquet-to-csv?duckdb=self");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Convert Parquet to CSV",
