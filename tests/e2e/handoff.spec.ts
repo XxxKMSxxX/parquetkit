@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { editorContent } from "./sql-editor";
 
 test("hands the loaded file off from the viewer to the SQL workbench", async ({
   page,
@@ -14,5 +15,5 @@ test("hands the loaded file off from the viewer to the SQL workbench", async ({
     "demo.parquet",
     { timeout: 30_000 },
   );
-  await expect(page.getByTestId("sql-editor")).toHaveValue(/demo\.parquet/);
+  await expect(editorContent(page)).toHaveText(/demo\.parquet/);
 });

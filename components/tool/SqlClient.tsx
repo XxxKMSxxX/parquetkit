@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FileDropZone } from "./FileDropZone";
 import { DataTable } from "./DataTable";
+import { SqlEditor, type SqlEditorHandle } from "./SqlEditor";
 import { resolveBundleSource } from "./bundle-source";
 import { takeFiles } from "./file-handoff";
 import { toCsv } from "@/lib/engine/format/cell";
@@ -41,7 +42,7 @@ export function SqlClient() {
   const [copied, setCopied] = useState(false);
   const [elapsedMs, setElapsedMs] = useState<number | null>(null);
   const prefetched = useRef(false);
-  const editorRef = useRef<HTMLTextAreaElement>(null);
+  const editorRef = useRef<SqlEditorHandle>(null);
 
   /** Insert 'name' at the cursor position and restore focus */
   const insertFileName = useCallback((name: string) => {
@@ -51,14 +52,7 @@ export function SqlClient() {
       setSql((prev) => prev + quoted);
       return;
     }
-    const start = el.selectionStart ?? el.value.length;
-    const end = el.selectionEnd ?? start;
-    setSql((prev) => prev.slice(0, start) + quoted + prev.slice(end));
-    requestAnimationFrame(() => {
-      el.focus();
-      const caret = start + quoted.length;
-      el.setSelectionRange(caret, caret);
-    });
+    el.insertAtCursor(quoted);
   }, []);
 
   useEffect(() => {
@@ -252,24 +246,14 @@ ORDER BY revenue DESC;`;
         <label htmlFor="sql-editor" className="font-semibold">
           SQL
         </label>
-        <textarea
+        <SqlEditor
           ref={editorRef}
-          id="sql-editor"
-          data-testid="sql-editor"
           value={sql}
-          onChange={(e) => setSql(e.target.value)}
+          onChange={setSql}
+          onRun={run}
           onFocus={prefetch}
-          onKeyDown={(e) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-              e.preventDefault();
-              void run();
-            }
-          }}
-          rows={6}
-          spellCheck={false}
+          fileNames={files.map((f) => f.name)}
           placeholder="SELECT * FROM 'yourfile.parquet' LIMIT 100"
-          // 16px on phones: below that iOS Safari force-zooms the page on focus
-          className="w-full resize-y rounded-lg border border-neutral-300 bg-white p-4 font-mono text-base leading-7 transition-colors placeholder:text-neutral-400 focus:border-sky-500/60 sm:text-sm dark:border-neutral-700 dark:bg-neutral-950 dark:placeholder:text-neutral-600 dark:focus:border-sky-400/60"
         />
         {/* Run belongs to the editor (left); export acts on the result (right) */}
         <div className="flex flex-wrap items-center gap-3">
