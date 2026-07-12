@@ -13,6 +13,9 @@ permissions:
 
 jobs:
   automerge:
+    # Owner-only: without this, anyone could publish content to the site by
+    # sending a content-only PR (schema-safe, but e.g. spam links would ship)
+    if: github.event.pull_request.user.login == github.repository_owner
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

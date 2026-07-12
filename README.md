@@ -81,6 +81,14 @@ Markdown files in `content/` with zod-validated frontmatter. Raw HTML is not
 rendered (and CI rejects it), so content changes are structurally safe — a
 PR that only touches `content/**` auto-merges once CI passes.
 
+## Contributing
+
+Bug reports, questions and ideas are very welcome — please use
+[issues](https://github.com/XxxKMSxxX/parquetkit/issues) and
+[discussions](https://github.com/XxxKMSxxX/parquetkit/discussions). Pull
+requests are generally not accepted: ParquetKit is open source, but not open
+contribution. See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
+
 ## License
 
-[MIT](./LICENSE)
+[MIT](./LICENSE) © 2026 Shun Kimura
