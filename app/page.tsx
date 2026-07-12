@@ -64,9 +64,9 @@ export default function Home() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 -top-16 -z-10 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(56,189,248,0.10),transparent_60%)]"
       />
-      <section className="grid items-center gap-8 lg:grid-cols-[1fr_minmax(0,640px)]">
+      <section className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,880px)]">
         <div className="flex flex-col gap-4">
-          <h1 className="text-4xl font-bold tracking-tight">
+          <h1 className="text-4xl font-bold tracking-tight xl:text-5xl xl:leading-[1.15]">
             Work with Parquet files, entirely in your browser
           </h1>
           <div className="flex flex-col text-lg text-neutral-600 dark:text-neutral-400">
@@ -80,29 +80,45 @@ export default function Home() {
             </p>
           </div>
         </div>
-        <Link
-          href="/parquet-viewer"
-          className="group flex flex-col gap-2"
-        >
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            poster="/hero-demo-poster.webp"
+        <Link href="/parquet-viewer" className="group relative flex flex-col gap-3">
+          {/* Soft glow behind the app window */}
+          <div
             aria-hidden="true"
-            className="w-full rounded-lg border border-neutral-200 transition-colors group-hover:border-sky-500/60 motion-reduce:hidden dark:border-neutral-800 dark:group-hover:border-sky-400/60"
-          >
-            <source src="/hero-demo.mp4" type="video/mp4" />
-          </video>
-          <Image
-            src="/hero-demo-poster.webp"
-            width={1280}
-            height={720}
-            alt="The Parquet Viewer showing schema and rows of a sample dataset"
-            className="hidden w-full rounded-lg border border-neutral-200 motion-reduce:block dark:border-neutral-800"
+            className="pointer-events-none absolute -inset-8 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.12),transparent_65%)]"
           />
+          {/* macOS-style window chrome */}
+          <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-2xl shadow-neutral-950/50 transition-colors group-hover:border-sky-500/50 dark:border-neutral-800 dark:bg-neutral-900 dark:group-hover:border-sky-400/50">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-neutral-200 px-3.5 py-2.5 dark:border-neutral-800">
+              <span aria-hidden="true" className="flex gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+                <span className="h-2.5 w-2.5 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+                <span className="h-2.5 w-2.5 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+              </span>
+              <span className="rounded-md bg-neutral-100 px-3 py-0.5 font-mono text-xs text-neutral-600 dark:bg-neutral-950/60 dark:text-neutral-400">
+                parquetkit.com/parquet-viewer
+              </span>
+              <span />
+            </div>
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster="/hero-demo-poster.webp"
+              aria-hidden="true"
+              className="aspect-video w-full motion-reduce:hidden"
+            >
+              <source src="/hero-demo.mp4" type="video/mp4" />
+            </video>
+            <Image
+              src="/hero-demo-poster.webp"
+              width={1280}
+              height={720}
+              alt="The sample dataset open in the viewer, showing its schema and rows"
+              className="hidden aspect-video w-full motion-reduce:block"
+            />
+          </div>
           <span className="text-center text-xs text-neutral-400 transition-colors group-hover:text-sky-600 dark:group-hover:text-sky-400">
             The sample dataset opening in the viewer — try it yourself →
           </span>

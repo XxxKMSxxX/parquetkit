@@ -1,6 +1,6 @@
 {
   "name": "parquetkit",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "View, query and convert Parquet files entirely in your browser — no upload, powered by DuckDB-WASM and hyparquet.",
   "homepage": "https://parquetkit.com",
