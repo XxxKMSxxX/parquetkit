@@ -25,7 +25,7 @@ export default function ParquetViewerPage() {
       <section className="grid gap-8 border-t border-neutral-200 pt-8 lg:grid-cols-2 dark:border-neutral-800">
         <div className="flex max-w-prose flex-col gap-3">
           <h2 className="text-xl font-semibold">How it works</h2>
-          <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+          <p className="text-[15px] leading-7 text-neutral-600 dark:text-neutral-400">
           This viewer reads Parquet files with{" "}
           <a
             className="underline"
@@ -43,7 +43,7 @@ export default function ParquetViewerPage() {
         </div>
         <div className="flex max-w-prose flex-col gap-3">
           <h2 className="text-xl font-semibold">Why view Parquet in the browser?</h2>
-          <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+          <p className="text-[15px] leading-7 text-neutral-600 dark:text-neutral-400">
           Parquet is a columnar binary format — you cannot just open it in a
           text editor, and spinning up Spark, pandas or DuckDB on your laptop
           just to peek at a file is overkill. This page replaces that ritual

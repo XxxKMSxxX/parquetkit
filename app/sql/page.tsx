@@ -24,7 +24,7 @@ export default function SqlWorkbenchPage() {
       <section className="grid gap-8 border-t border-neutral-200 pt-8 lg:grid-cols-2 dark:border-neutral-800">
         <div className="flex max-w-prose flex-col gap-3">
           <h2 className="text-xl font-semibold">How it works</h2>
-          <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+          <p className="text-[15px] leading-7 text-neutral-600 dark:text-neutral-400">
           The workbench runs{" "}
           <a className="underline" href="https://duckdb.org/docs/api/wasm/overview" rel="noopener">
             DuckDB-WASM
@@ -41,7 +41,7 @@ export default function SqlWorkbenchPage() {
         </div>
         <div className="flex max-w-prose flex-col gap-3">
           <h2 className="text-xl font-semibold">Tips &amp; shortcuts</h2>
-          <ul className="flex flex-col gap-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+          <ul className="flex flex-col gap-2 text-[15px] leading-7 text-neutral-600 dark:text-neutral-400">
             <li>
               Press{" "}
               <kbd className="rounded border border-neutral-300 px-1.5 py-0.5 font-mono text-xs dark:border-neutral-700">

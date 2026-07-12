@@ -13,7 +13,7 @@ export function Faq({ items }: FaqProps) {
         {items.map((item) => (
           <div key={item.question}>
             <dt className="max-w-prose font-medium">{item.question}</dt>
-            <dd className="mt-1 max-w-prose text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+            <dd className="mt-1 max-w-prose text-[15px] leading-7 text-neutral-600 dark:text-neutral-400">
               {item.answer}
             </dd>
           </div>
