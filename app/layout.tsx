@@ -52,19 +52,23 @@ export default function RootLayout({
               href="/"
               className="mr-auto flex items-center gap-2 font-semibold tracking-tight"
             >
-              {/* Columnar bars — the same motif as the favicon */}
+              {/* Parquet block mark — the same motif as the favicon */}
               <svg
                 viewBox="0 0 64 64"
                 className="h-5 w-5"
                 aria-hidden="true"
                 focusable="false"
               >
-                <rect x="6" y="14" width="11" height="42" rx="3" fill="#38bdf8" />
-                <rect x="21" y="24" width="11" height="32" rx="3" fill="#7dd3fc" />
-                <rect x="36" y="8" width="11" height="48" rx="3" fill="#0ea5e9" />
-                <rect x="51" y="30" width="11" height="26" rx="3" fill="#bae6fd" />
+                <g transform="translate(32,32) rotate(45)">
+                  <rect x="-21" y="-21" width="19" height="19" rx="3.5" fill="#7dd3fc" />
+                  <rect x="2" y="-21" width="19" height="19" rx="3.5" fill="#38bdf8" />
+                  <rect x="-21" y="2" width="19" height="19" rx="3.5" fill="#0ea5e9" />
+                  <rect x="2" y="2" width="19" height="19" rx="3.5" fill="#0369a1" />
+                </g>
               </svg>
-              ParquetKit
+              <span>
+                Parquet<span className="text-sky-400">Kit</span>
+              </span>
             </Link>
             <NavLinks />
           </div>
