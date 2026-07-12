@@ -50,42 +50,18 @@ export default function OpenGraphImage() {
           overflow: "hidden",
         }}
       >
-        {/* 右側の装飾: 寄木タイルが奥へフェードするパターン */}
+        {/* 右端に大きなマークが1つだけ静かに覗く */}
         <div
           style={{
             position: "absolute",
-            right: -40,
-            top: 90,
+            right: -110,
+            top: 115,
             display: "flex",
-            flexDirection: "column",
-            gap: 56,
-            opacity: 0.5,
-            transform: "rotate(0deg)",
+            opacity: 0.28,
           }}
         >
-          <div style={{ display: "flex", gap: 56, marginLeft: 70 }}>
-            <Mark tile={52} gap={9} />
-            <Mark tile={52} gap={9} />
-          </div>
-          <div style={{ display: "flex", gap: 56 }}>
-            <Mark tile={52} gap={9} />
-            <Mark tile={52} gap={9} />
-          </div>
-          <div style={{ display: "flex", gap: 56, marginLeft: 70 }}>
-            <Mark tile={52} gap={9} />
-            <Mark tile={52} gap={9} />
-          </div>
+          <Mark tile={190} gap={26} />
         </div>
-        {/* 右側を暗くフェードさせて本文の可読性を確保 */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(90deg, rgba(10,15,28,1) 45%, rgba(10,15,28,0.55) 70%, rgba(10,15,28,0.2) 100%)",
-            display: "flex",
-          }}
-        />
 
         <div
           style={{

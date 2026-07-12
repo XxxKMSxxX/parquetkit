@@ -1,13 +1,27 @@
-# ParquetKit
+<div align="center">
+  <img src=".github/logo.svg" width="88" alt="" />
+  <h1>ParquetKit</h1>
+  <p><strong>View, query and convert Parquet files — entirely in your browser.</strong></p>
+  <p>
+    <a href="https://github.com/XxxKMSxxX/parquetkit/actions/workflows/ci.yml"><img src="https://github.com/XxxKMSxxX/parquetkit/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+    <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+    <a href="https://github.com/XxxKMSxxX/parquetkit/releases"><img src="https://img.shields.io/github/v/release/XxxKMSxxX/parquetkit" alt="Release" /></a>
+    <a href="https://github.com/sponsors/XxxKMSxxX"><img src="https://img.shields.io/badge/Sponsor-%E2%99%A5-db61a2" alt="Sponsor" /></a>
+  </p>
+  <p>
+    <a href="https://parquetkit.com"><strong>parquetkit.com</strong></a> ·
+    <a href="https://parquetkit.com/parquet-viewer">Viewer</a> ·
+    <a href="https://parquetkit.com/sql">SQL Workbench</a> ·
+    <a href="https://parquetkit.com/docs">Guides</a> ·
+    <a href="https://github.com/XxxKMSxxX/parquetkit/discussions">Discussions</a>
+  </p>
+</div>
 
-[![CI](https://github.com/XxxKMSxxX/parquetkit/actions/workflows/ci.yml/badge.svg)](https://github.com/XxxKMSxxX/parquetkit/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+---
 
-**View, query and convert Parquet files — entirely in your browser.**
-
-No upload. No signup. No server. Every tool on [parquetkit.com](https://parquetkit.com)
-runs locally via WebAssembly, which makes it safe for confidential data and
-fast for multi-gigabyte files.
+No upload. No signup. No server. Every tool runs locally via WebAssembly,
+which makes it safe for confidential data and fast for multi-gigabyte files —
+there is nowhere to send your file, and you can verify that in this repo.
 
 *The Parquet Viewer opening the sample dataset — schema, metadata and rows appear instantly:*
 
