@@ -36,7 +36,7 @@ export function Toc({ items }: { items: TocItem[] }) {
 
   return (
     <nav aria-label="On this page" data-testid="toc" className="flex flex-col gap-2">
-      <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
+      <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">
         On this page
       </p>
       <ul className="flex flex-col gap-1.5 border-l border-neutral-200 text-sm dark:border-neutral-800">

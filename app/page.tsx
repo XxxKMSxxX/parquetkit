@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { preload } from "react-dom";
 import Link from "next/link";
 import { loadConversions, loadDocs } from "@/lib/content/loader";
 
@@ -51,6 +52,8 @@ function conversionLabel(slug: string): string {
 }
 
 export default function Home() {
+  // The hero poster is the LCP element — tell the browser about it immediately
+  preload("/hero-demo-poster.webp", { as: "image", fetchPriority: "high" });
   const conversions = loadConversions();
   const docs = loadDocs();
 
@@ -73,7 +76,6 @@ export default function Home() {
         </div>
         <Link
           href="/parquet-viewer"
-          aria-label="Try the sample dataset in the viewer"
           className="group flex flex-col gap-2"
         >
           <video
@@ -82,20 +84,20 @@ export default function Home() {
             loop
             playsInline
             preload="metadata"
-            poster="/hero-demo-poster.jpg"
+            poster="/hero-demo-poster.webp"
             aria-hidden="true"
             className="w-full rounded-lg border border-neutral-200 transition-colors group-hover:border-sky-500/60 motion-reduce:hidden dark:border-neutral-800 dark:group-hover:border-sky-400/60"
           >
             <source src="/hero-demo.mp4" type="video/mp4" />
           </video>
           <Image
-            src="/hero-demo-poster.jpg"
+            src="/hero-demo-poster.webp"
             width={1280}
             height={720}
             alt="The Parquet Viewer showing schema and rows of a sample dataset"
             className="hidden w-full rounded-lg border border-neutral-200 motion-reduce:block dark:border-neutral-800"
           />
-          <span className="text-center text-xs text-neutral-500 transition-colors group-hover:text-sky-600 dark:group-hover:text-sky-400">
+          <span className="text-center text-xs text-neutral-400 transition-colors group-hover:text-sky-600 dark:group-hover:text-sky-400">
             The sample dataset opening in the viewer — try it yourself →
           </span>
         </Link>
@@ -138,7 +140,7 @@ export default function Home() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
           Converters
         </h2>
         <ul className="flex flex-wrap gap-2">
@@ -156,7 +158,7 @@ export default function Home() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
           Guides
         </h2>
         <ul className="flex flex-col divide-y divide-neutral-100 dark:divide-neutral-900">

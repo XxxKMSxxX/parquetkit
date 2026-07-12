@@ -63,7 +63,7 @@ export default async function DocPage({
 
       {related.length > 0 ? (
         <section className="flex flex-col gap-3 border-t border-neutral-200 pt-8 dark:border-neutral-800">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
             More guides
           </h2>
           <ul className="flex flex-col gap-2 text-sm">

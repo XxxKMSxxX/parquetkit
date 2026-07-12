@@ -71,7 +71,7 @@ export default function RootLayout({
         </header>
         {children}
         <footer className="border-t border-neutral-200 dark:border-neutral-800/80">
-          <div className="mx-auto flex w-full max-w-[1800px] flex-col gap-4 px-6 py-8 text-xs text-neutral-500">
+          <div className="mx-auto flex w-full max-w-[1800px] flex-col gap-4 px-6 py-8 text-xs text-neutral-400">
             <nav aria-label="Footer" className="flex flex-wrap gap-x-5 gap-y-1">
               <Link href="/parquet-viewer" className="transition-colors hover:text-sky-400">
                 Parquet Viewer
@@ -111,7 +111,7 @@ export default function RootLayout({
         <Script
           src="https://static.cloudflareinsights.com/beacon.min.js"
           data-cf-beacon='{"token": "9e2ab6392b8c4253982c56efd5e1ed8a"}'
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
       </body>
     </html>
