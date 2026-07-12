@@ -57,8 +57,8 @@ export function FileDropZone({
       }}
       className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-6 py-12 text-center transition-colors ${
         dragging
-          ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
-          : "border-neutral-300 hover:border-neutral-400 dark:border-neutral-700 dark:hover:border-neutral-500"
+          ? "border-sky-500 bg-sky-50 dark:bg-sky-950/30"
+          : "border-neutral-300 hover:border-sky-500/70 hover:bg-sky-50/50 dark:border-neutral-700 dark:hover:border-sky-400/60 dark:hover:bg-sky-950/20"
       }`}
     >
       <p className="font-medium">{label}</p>

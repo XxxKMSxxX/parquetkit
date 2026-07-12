@@ -65,6 +65,20 @@ export function ViewerClient() {
     [loadPage],
   );
 
+  const loadSample = useCallback(async () => {
+    setError(null);
+    setBusy(true);
+    try {
+      const res = await fetch("/samples/demo.parquet");
+      if (!res.ok) throw new Error(`sample fetch failed (${res.status})`);
+      const blob = await res.blob();
+      await onFiles([new File([blob], "demo.parquet", { type: "application/octet-stream" })]);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+      setBusy(false);
+    }
+  }, [onFiles]);
+
   if (!loaded) {
     return (
       <div className="flex flex-col gap-3">
@@ -74,6 +88,18 @@ export function ViewerClient() {
           sublabel="Any size — reading is streamed, not loaded into memory at once"
           onFiles={onFiles}
         />
+        <p className="text-center text-sm text-neutral-500">
+          No Parquet file handy?{" "}
+          <button
+            type="button"
+            disabled={busy}
+            onClick={loadSample}
+            className="font-medium text-sky-600 underline underline-offset-2 transition-colors hover:text-sky-500 disabled:opacity-50 dark:text-sky-400 dark:hover:text-sky-300"
+          >
+            Load a sample file
+          </button>{" "}
+          — 5,000 e-commerce orders, 11 columns.
+        </p>
         {error ? (
           <div className="flex flex-col gap-1">
             <p role="alert" className="text-sm text-red-600 dark:text-red-400">
