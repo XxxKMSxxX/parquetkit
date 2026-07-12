@@ -55,12 +55,12 @@ export default function Home() {
   const docs = loadDocs();
 
   return (
-    <main className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col gap-12 px-6 py-16">
+    <main className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col gap-12 px-6 py-16">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 -top-16 -z-10 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(56,189,248,0.10),transparent_60%)]"
       />
-      <section className="grid items-center gap-8 lg:grid-cols-[1fr_minmax(0,560px)]">
+      <section className="grid items-center gap-8 lg:grid-cols-[1fr_minmax(0,640px)]">
         <div className="flex flex-col gap-4">
           <h1 className="max-w-2xl text-4xl font-bold tracking-tight">
             Work with Parquet files, entirely in your browser
@@ -90,8 +90,8 @@ export default function Home() {
           </video>
           <Image
             src="/hero-demo-poster.jpg"
-            width={1200}
-            height={664}
+            width={1280}
+            height={720}
             alt="The Parquet Viewer showing schema and rows of a sample dataset"
             className="hidden w-full rounded-lg border border-neutral-200 motion-reduce:block dark:border-neutral-800"
           />

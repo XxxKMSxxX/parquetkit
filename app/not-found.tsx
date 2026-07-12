@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center gap-6 px-6 py-24 text-center">
+    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-center gap-6 px-6 py-24 text-center">
       <h1 className="text-4xl font-bold tracking-tight">Page not found</h1>
       <p className="max-w-md text-neutral-600 dark:text-neutral-400">
         This page does not exist — but your Parquet file is probably still
