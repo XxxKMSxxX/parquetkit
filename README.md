@@ -9,7 +9,9 @@ No upload. No signup. No server. Every tool on [parquetkit.com](https://parquetk
 runs locally via WebAssembly, which makes it safe for confidential data and
 fast for multi-gigabyte files.
 
-![Opening the sample dataset in the Parquet Viewer — schema, metadata and rows appear instantly](.github/demo.gif)
+*The Parquet Viewer opening the sample dataset — schema, metadata and rows appear instantly:*
+
+![Opening the sample dataset in the Parquet Viewer](.github/demo.gif)
 
 ## Tools
 
@@ -18,6 +20,10 @@ fast for multi-gigabyte files.
 | [Parquet Viewer](https://parquetkit.com/parquet-viewer) | Drop a `.parquet` file → schema, metadata, paginated rows. Opens a 1.3 GB file in ~350 ms because only the metadata footer and visible row ranges are read. |
 | [SQL Workbench](https://parquetkit.com/sql) | Full DuckDB SQL against local Parquet / CSV / JSON files. Joins across files, window functions, CSV export. |
 | [Converters](https://parquetkit.com/convert/parquet-to-csv) | Parquet ⇄ CSV / JSON / JSONL, streamed by DuckDB with ZSTD output. |
+
+*The SQL Workbench aggregating the same dataset with DuckDB:*
+
+![Running an aggregate query in the SQL Workbench](.github/demo-sql.gif)
 
 ## Architecture
 

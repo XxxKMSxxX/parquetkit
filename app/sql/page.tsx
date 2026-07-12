@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function SqlWorkbenchPage() {
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10 px-6 py-12">
-      <header className="flex flex-col gap-3">
+    <main className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-10 px-6 py-12">
+      <header className="flex max-w-3xl flex-col gap-3">
         <h1 className="text-3xl font-bold tracking-tight">SQL Workbench</h1>
         <p className="text-neutral-600 dark:text-neutral-400">
           Query local Parquet, CSV and JSON files with real SQL, powered by
@@ -21,7 +21,7 @@ export default function SqlWorkbenchPage() {
 
       <SqlTool />
 
-      <section className="flex flex-col gap-3 border-t border-neutral-200 pt-8 dark:border-neutral-800">
+      <section className="flex max-w-3xl flex-col gap-3 border-t border-neutral-200 pt-8 dark:border-neutral-800">
         <h2 className="text-xl font-semibold">How it works</h2>
         <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
           The workbench runs{" "}
