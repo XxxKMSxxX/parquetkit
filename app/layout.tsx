@@ -92,6 +92,13 @@ export default function RootLayout({
               >
                 GitHub
               </a>
+              <a
+                href="https://github.com/sponsors/XxxKMSxxX"
+                rel="noopener"
+                className="transition-colors hover:text-sky-400"
+              >
+                Sponsor ♥
+              </a>
             </nav>
             <p>
               ParquetKit — every tool runs locally in your browser. Your files
