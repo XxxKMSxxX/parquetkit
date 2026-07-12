@@ -47,6 +47,30 @@ describe("DuckDB-WASM integration", () => {
     await dropFile(db, "basic.parquet");
   });
 
+  it("renders DECIMAL values with their scale intact", async () => {
+    const db = await dbPromise;
+    const result = await runQuery(
+      db,
+      `SELECT CAST('101664.13' AS DECIMAL(18,2)) AS v,
+              CAST('-5.10' AS DECIMAL(10,2)) AS neg,
+              CAST('0.07' AS DECIMAL(4,2)) AS small,
+              CAST('42' AS DECIMAL(10,0)) AS whole`,
+    );
+    expect(result.rows[0].v).toBe("101664.13");
+    expect(result.rows[0].neg).toBe("-5.10");
+    expect(result.rows[0].small).toBe("0.07");
+    expect(result.rows[0].whole).toBe("42");
+  });
+
+  it("renders TIMESTAMP values as ISO strings", async () => {
+    const db = await dbPromise;
+    const result = await runQuery(
+      db,
+      "SELECT TIMESTAMP '2026-01-24 21:01:00' AS ts",
+    );
+    expect(result.rows[0].ts).toBe("2026-01-24T21:01:00.000Z");
+  });
+
   it("csv→parquet conversion produces a valid Parquet file", async () => {
     const db = await dbPromise;
     const file = await fixtureFile(csvFixtureUrl, "simple.csv", "text/csv");

@@ -76,6 +76,30 @@ export async function dropFile(db: duckdb.AsyncDuckDB, name: string): Promise<vo
   await db.dropFile(name);
 }
 
+// Arrow decimals arrive as raw 128-bit little-endian words with the scale on
+// the field type; naive JSON conversion drops the decimal point entirely.
+function decimalToString(value: unknown, scale: number): string {
+  let digits: bigint;
+  if (typeof value === "bigint") {
+    digits = value;
+  } else if (value instanceof Uint32Array) {
+    let unsigned = 0n;
+    for (let i = value.length - 1; i >= 0; i--) {
+      unsigned = (unsigned << 32n) | BigInt(value[i]);
+    }
+    const bits = BigInt(value.length * 32);
+    const signBit = 1n << (bits - 1n);
+    digits = (unsigned & signBit) !== 0n ? unsigned - (1n << bits) : unsigned;
+  } else {
+    return String(value);
+  }
+  const negative = digits < 0n;
+  const abs = (negative ? -digits : digits).toString().padStart(scale + 1, "0");
+  const whole = abs.slice(0, abs.length - scale) || "0";
+  const fraction = scale > 0 ? `.${abs.slice(abs.length - scale)}` : "";
+  return `${negative ? "-" : ""}${whole}${fraction}`;
+}
+
 /** Run SQL and return the rows as plain JS objects. */
 export async function runQuery(
   db: duckdb.AsyncDuckDB,
@@ -84,8 +108,36 @@ export async function runQuery(
   const conn = await db.connect();
   try {
     const table = await conn.query(sql);
-    const columns = table.schema.fields.map((field) => field.name);
-    const rows = table.toArray().map((row) => row.toJSON() as Record<string, unknown>);
+    const fields = table.schema.fields;
+    const columns = fields.map((field) => field.name);
+    const decimals = fields.filter(
+      (field): boolean =>
+        typeof (field.type as { scale?: unknown }).scale === "number" &&
+        typeof (field.type as { precision?: unknown }).precision === "number",
+    );
+    // Arrow normalizes timestamp values to epoch milliseconds; render as ISO
+    // like the viewer does instead of a raw number
+    const timestamps = fields.filter(
+      (field): boolean =>
+        "timezone" in (field.type as object) &&
+        typeof (field.type as { unit?: unknown }).unit === "number",
+    );
+    const rows = table.toArray().map((row) => {
+      const obj = row.toJSON() as Record<string, unknown>;
+      for (const field of decimals) {
+        obj[field.name] = decimalToString(
+          (row as Record<string, unknown>)[field.name],
+          (field.type as { scale: number }).scale,
+        );
+      }
+      for (const field of timestamps) {
+        const value = (row as Record<string, unknown>)[field.name];
+        if (value !== null && value !== undefined) {
+          obj[field.name] = new Date(Number(value)).toISOString();
+        }
+      }
+      return obj;
+    });
     return { columns, rows, numRows: table.numRows };
   } finally {
     await conn.close();
