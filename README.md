@@ -92,3 +92,11 @@ contribution. See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 ## License
 
 [MIT](./LICENSE) © 2026 Shun Kimura
+
+Built with [hyparquet](https://github.com/hyparam/hyparquet) (MIT),
+[DuckDB-WASM](https://github.com/duckdb/duckdb-wasm) (MIT) and
+[Apache Arrow](https://github.com/apache/arrow-js) (Apache-2.0).
+
+Apache Parquet, Apache Arrow and their logos are trademarks of the
+[Apache Software Foundation](https://www.apache.org/). ParquetKit is an
+independent project and is not affiliated with or endorsed by the ASF.

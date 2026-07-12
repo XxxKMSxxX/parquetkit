@@ -157,6 +157,11 @@ export default function RootLayout({
               >
                 v{version}
               </a>
+              <p className="w-full text-[11px]">
+                Apache Parquet is a trademark of the Apache Software
+                Foundation. ParquetKit is an independent project, not
+                affiliated with or endorsed by the ASF.
+              </p>
             </div>
           </div>
         </footer>
