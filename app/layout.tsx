@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   // Resolve each page's canonical from its route (avoids duplicates across www and the old vercel.app domain)
   alternates: {
     canonical: "./",
+    types: {
+      "application/rss+xml": "/feed.xml",
+    },
   },
   title: {
     default: "ParquetKit — View, Query & Convert Parquet Files in Your Browser",
@@ -46,6 +49,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-sky-600 focus:px-4 focus:py-2 focus:text-white"
+        >
+          Skip to content
+        </a>
         <header className="sticky top-0 z-40 border-b border-neutral-800/80 bg-neutral-950/70 backdrop-blur">
           <div className="mx-auto flex w-full max-w-[1800px] flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3">
             <Link

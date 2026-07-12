@@ -1,0 +1,14 @@
+name: Feature request
+description: Suggest a new tool, format or improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like ParquetKit to do?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: What problem does it solve for you?

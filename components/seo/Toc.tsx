@@ -9,7 +9,7 @@ export interface TocItem {
 }
 
 /** Sticky "On this page" rail with scroll-position highlighting. */
-export function Toc({ items }: { items: TocItem[] }) {
+export function Toc({ items, testId = "toc" }: { items: TocItem[]; testId?: string }) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export function Toc({ items }: { items: TocItem[] }) {
   if (items.length === 0) return null;
 
   return (
-    <nav aria-label="On this page" data-testid="toc" className="flex flex-col gap-2">
+    <nav aria-label="On this page" data-testid={testId} className="flex flex-col gap-2">
       <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">
         On this page
       </p>

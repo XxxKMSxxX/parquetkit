@@ -7,6 +7,7 @@ import { Markdown } from "@/components/seo/Markdown";
 import { findDoc, loadDocs } from "@/lib/content/loader";
 import { extractToc } from "@/lib/content/toc";
 import { Toc } from "@/components/seo/Toc";
+import { JsonLd, techArticleJsonLd } from "@/components/seo/JsonLd";
 
 export function generateStaticParams(): { slug: string }[] {
   return loadDocs().map((entry) => ({ slug: entry.meta.slug }));
@@ -44,8 +45,16 @@ export default async function DocPage({
   ];
 
   return (
-    <main className="mx-auto w-full max-w-[1800px] flex-1 px-6 py-12 lg:grid lg:grid-cols-[minmax(0,52rem)_16rem] lg:justify-between lg:gap-12">
+    <main id="main" className="mx-auto w-full max-w-[1800px] flex-1 px-6 py-12 lg:grid lg:grid-cols-[minmax(0,52rem)_16rem] lg:justify-between lg:gap-12">
       <div className="flex min-w-0 flex-col gap-10">
+      <details className="group rounded-lg border border-neutral-200 p-4 lg:hidden dark:border-neutral-800">
+        <summary className="cursor-pointer text-sm font-semibold text-neutral-400">
+          On this page
+        </summary>
+        <div className="mt-3">
+          <Toc items={toc} testId="toc-mobile" />
+        </div>
+      </details>
       <header className="flex flex-col gap-3">
         <p className="text-sm">
           <Link href="/docs" className="text-neutral-500 underline">
@@ -58,6 +67,14 @@ export default async function DocPage({
       <Markdown>{entry.body}</Markdown>
 
       <Faq items={entry.meta.faq} />
+      <JsonLd
+        data={techArticleJsonLd({
+          site,
+          slug,
+          title: entry.meta.title,
+          description: entry.meta.description,
+        })}
+      />
 
       <ShareButtons url={`${site}/docs/${slug}`} title={entry.meta.title} />
 

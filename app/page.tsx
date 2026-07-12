@@ -2,6 +2,7 @@ import Image from "next/image";
 import { preload } from "react-dom";
 import Link from "next/link";
 import { loadConversions, loadDocs } from "@/lib/content/loader";
+import { JsonLd, softwareAppJsonLd } from "@/components/seo/JsonLd";
 
 const tools = [
   {
@@ -58,7 +59,7 @@ export default function Home() {
   const docs = loadDocs();
 
   return (
-    <main className="relative mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-12 px-6 py-16">
+    <main id="main" className="relative mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-12 px-6 py-16">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 -top-16 -z-10 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(56,189,248,0.10),transparent_60%)]"
@@ -138,6 +139,12 @@ export default function Home() {
           </Link>
         ))}
       </section>
+
+      <JsonLd
+        data={softwareAppJsonLd(
+          process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+        )}
+      />
 
       <section className="flex flex-col gap-3">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
