@@ -127,6 +127,12 @@ export default function RootLayout({
                   >
                     Sponsor ♥
                   </a>
+                  <a
+                    href="mailto:contact@parquetkit.com"
+                    className="text-neutral-600 transition-colors hover:text-sky-600 dark:text-neutral-400 dark:hover:text-sky-400"
+                  >
+                    Contact
+                  </a>
                 </div>
               </nav>
             </div>

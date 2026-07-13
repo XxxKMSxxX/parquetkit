@@ -89,6 +89,9 @@ Bug reports, questions and ideas are very welcome — please use
 requests are generally not accepted: ParquetKit is open source, but not open
 contribution. See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
 
+For anything else — press, licensing, partnerships — reach out at
+[contact@parquetkit.com](mailto:contact@parquetkit.com).
+
 ## License
 
 [MIT](./LICENSE) © 2026 Shun Kimura
