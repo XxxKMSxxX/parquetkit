@@ -6,7 +6,7 @@ const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/parquet-viewer", "/sql", "/docs"];
+  const staticRoutes = ["", "/parquet-viewer", "/sql", "/diff", "/docs"];
   const conversionRoutes = loadConversions().map((entry) => ({
     route: `/convert/${entry.meta.slug}`,
     lastModified: entry.meta.date,

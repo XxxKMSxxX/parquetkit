@@ -23,6 +23,12 @@ const tools = [
     description:
       "Convert between Parquet, CSV, JSON and JSONL without uploading anything.",
   },
+  {
+    href: "/diff",
+    title: "Parquet Diff",
+    description:
+      "Compare two Parquet files by key: added, removed and changed rows plus schema drift.",
+  },
 ] as const;
 
 const proofs = [
@@ -141,7 +147,7 @@ export default function Home() {
         ))}
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-3">
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {tools.map((tool) => (
           <Link
             key={tool.href}

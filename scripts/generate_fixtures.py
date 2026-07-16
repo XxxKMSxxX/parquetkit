@@ -62,6 +62,48 @@ def base_table() -> pa.Table:
     )
 
 
+def diff_right_table(left: pa.Table) -> pa.Table:
+    """Variant of the base table with known row-level differences (join key: id).
+
+    vs base: ids 10/20 removed, ids 100-102 added, ids 1/3/5/7 changed
+    (score +1000; names of 3/7 also renamed) -> 3 added, 2 removed, 4 changed, 94 unchanged.
+    """
+    removed_ids = {10, 20}
+    changed_score_ids = {1, 3, 5, 7}
+    changed_name_ids = {3, 7}
+
+    right_rows = []
+    for row in left.to_pylist():
+        if row["id"] in removed_ids:
+            continue
+        r = dict(row)
+        if r["id"] in changed_score_ids:
+            r["score"] = r["score"] + 1000.0
+        if r["id"] in changed_name_ids:
+            r["name"] = f"renamed_{r['id']:03d}"
+        right_rows.append(r)
+
+    template = left.to_pylist()[0]
+    for new_id in (100, 101, 102):
+        r = dict(template)
+        r["id"] = new_id
+        r["name"] = f"user_{new_id:03d}"
+        right_rows.append(r)
+
+    return pa.Table.from_pylist(right_rows, schema=left.schema)
+
+
+def diff_schema_right_table(left: pa.Table) -> pa.Table:
+    """Variant with schema-level differences: drops `nullable`, adds `region`,
+    and changes `score` from float64 to int64."""
+    t = left.drop_columns(["nullable"])
+    int_score = pa.array(
+        [int(v) for v in left.column("score").to_pylist()], type=pa.int64()
+    )
+    t = t.set_column(t.schema.get_field_index("score"), "score", int_score)
+    return t.append_column("region", pa.array(["apac"] * left.num_rows))
+
+
 def main() -> None:
     table = base_table()
 
@@ -82,6 +124,20 @@ def main() -> None:
 
     # Empty table
     pq.write_table(table.slice(0, 0), FIXTURES / "empty.parquet")
+
+    # Pairs for the diff tool (known added/removed/changed counts, schema drift,
+    # and a duplicate-key pair for key-uniqueness warnings)
+    pq.write_table(table, FIXTURES / "diff_left.parquet")
+    pq.write_table(diff_right_table(table), FIXTURES / "diff_right.parquet")
+    pq.write_table(diff_schema_right_table(table), FIXTURES / "diff_schema_right.parquet")
+    pq.write_table(
+        pa.table({"id": pa.array([1, 1, 2, 3], type=pa.int64()), "v": ["a", "b", "c", "d"]}),
+        FIXTURES / "diff_nokey_left.parquet",
+    )
+    pq.write_table(
+        pa.table({"id": pa.array([1, 2, 2, 4], type=pa.int64()), "v": ["a", "c", "x", "e"]}),
+        FIXTURES / "diff_nokey_right.parquet",
+    )
 
     # Source CSV / JSONL for the converters
     simple = table.select(["id", "score", "name", "active"])
