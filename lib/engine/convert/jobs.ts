@@ -25,7 +25,7 @@ export function parseConversionSlug(slug: string): ConversionPair | null {
 }
 
 /** Escaping for DuckDB SQL string literals. */
-function quoteLiteral(value: string): string {
+export function quoteLiteral(value: string): string {
   return `'${value.replaceAll("'", "''")}'`;
 }
 
