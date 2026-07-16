@@ -7,6 +7,7 @@ const links = [
   { href: "/parquet-viewer", label: "Viewer", prefix: "/parquet-viewer" },
   { href: "/sql", label: "SQL", prefix: "/sql" },
   { href: "/convert/parquet-to-csv", label: "Convert", prefix: "/convert" },
+  { href: "/diff", label: "Diff", prefix: "/diff" },
   { href: "/docs", label: "Guides", prefix: "/docs" },
 ] as const;
 

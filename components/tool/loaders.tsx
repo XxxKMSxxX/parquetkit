@@ -26,3 +26,8 @@ export const ConvertTool = dynamic(
   () => import("./ConvertClient").then((m) => m.ConvertClient),
   { ssr: false, loading: ToolSkeleton },
 );
+
+export const DiffTool = dynamic(
+  () => import("./DiffClient").then((m) => m.DiffClient),
+  { ssr: false, loading: ToolSkeleton },
+);

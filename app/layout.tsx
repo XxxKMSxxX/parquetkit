@@ -102,6 +102,9 @@ export default function RootLayout({
                   <Link href="/convert/parquet-to-csv" className="text-neutral-600 transition-colors hover:text-sky-600 dark:text-neutral-400 dark:hover:text-sky-400">
                     Converters
                   </Link>
+                  <Link href="/diff" className="text-neutral-600 transition-colors hover:text-sky-600 dark:text-neutral-400 dark:hover:text-sky-400">
+                    Parquet Diff
+                  </Link>
                 </div>
                 <div className="flex flex-col gap-2.5">
                   <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">
