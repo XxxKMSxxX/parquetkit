@@ -4,6 +4,7 @@ import {
   checkKeyUniqueness,
   diffSchemas,
   dropDiffInputs,
+  fetchAllDiffRows,
   fetchDiffRows,
   fetchDiffSummary,
   registerDiffInputs,
@@ -108,6 +109,24 @@ describe("Parquet diff engine", () => {
       offset: 2,
     });
     expect(paged.rows.map((row) => Number(row.id))).toEqual([5, 7]);
+
+    await dropDiffInputs(db, inputs);
+  });
+
+  it("fetchAllDiffRows returns every row per status, unpaged", async () => {
+    const db = await dbPromise;
+    const inputs = await registerDiffInputs(
+      db,
+      await fixtureFile(diffLeftUrl, "left.parquet"),
+      await fixtureFile(diffRightUrl, "right.parquet"),
+    );
+    const params = { keys: ["id"], compareColumns: COMPARE_COLUMNS };
+
+    const report = await fetchAllDiffRows(db, inputs, params);
+    expect(report.added.rows).toHaveLength(3);
+    expect(report.removed.rows).toHaveLength(2);
+    expect(report.changed.rows).toHaveLength(4);
+    expect(report.truncated).toBe(false);
 
     await dropDiffInputs(db, inputs);
   });

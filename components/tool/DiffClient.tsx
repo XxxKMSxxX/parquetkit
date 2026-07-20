@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FileDropZone } from "./FileDropZone";
 import { DataTable } from "./DataTable";
+import { ProUnlock } from "./ProUnlock";
 import { resolveBundleSource } from "./bundle-source";
 import { formatBytes } from "@/lib/engine/format/bytes";
 import {
@@ -11,6 +12,8 @@ import {
   type ColumnInfo,
 } from "@/lib/engine/parquet/reader";
 import {
+  buildDiffReportHtml,
+  buildDiffReportMarkdown,
   diffSchemas,
   guessKeyColumns,
   type DiffInputs,
@@ -18,6 +21,7 @@ import {
   type DiffSummary,
   type SchemaDiff,
 } from "@/lib/engine/diff";
+import { isProUnlocked } from "@/lib/pro/entitlement";
 import type { QueryResult } from "@/lib/engine/duckdb";
 
 const PAGE_SIZE = 50;
@@ -56,6 +60,9 @@ export function DiffClient() {
   const [activeTab, setActiveTab] = useState<DiffRowStatus>("added");
   const [page, setPage] = useState(0);
   const [rows, setRows] = useState<QueryResult | null>(null);
+  // Restored from localStorage — client-only via ssr:false, same pattern as SqlClient's last-query cache
+  const [proUnlocked, setProUnlocked] = useState(() => isProUnlocked());
+  const [exportingReport, setExportingReport] = useState(false);
   const inputsRef = useRef<DiffInputs | null>(null);
   const prefetched = useRef(false);
 
@@ -236,6 +243,58 @@ export function DiffClient() {
       await loadRows(activeTab, nextPage);
     },
     [activeTab, loadRows],
+  );
+
+  const downloadFile = useCallback((content: string, filename: string, mime: string) => {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = filename;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }, []);
+
+  const exportReport = useCallback(
+    async (format: "markdown" | "html") => {
+      if (!schemaDiff || !summary || !oldSide || !newSide) return;
+      const meta = {
+        oldFileName: oldSide.file.name,
+        newFileName: newSide.file.name,
+        key,
+        generatedAt: new Date().toISOString(),
+      };
+
+      if (!proUnlocked) {
+        downloadFile(
+          buildDiffReportMarkdown({ meta, schemaDiff, summary }),
+          "parquet-diff-report.md",
+          "text/markdown",
+        );
+        return;
+      }
+
+      const params = diffParams();
+      const inputs = inputsRef.current;
+      if (!params || !inputs) return;
+      setExportingReport(true);
+      try {
+        const [engine, diff] = await Promise.all([loadEngine(), loadDiffEngine()]);
+        const db = await engine.initDuckDB(resolveBundleSource());
+        const reportRows = await diff.fetchAllDiffRows(db, inputs, params);
+        const input = { meta, schemaDiff, summary, rows: reportRows };
+        if (format === "html") {
+          downloadFile(buildDiffReportHtml(input), "parquet-diff-report.html", "text/html");
+        } else {
+          downloadFile(buildDiffReportMarkdown(input), "parquet-diff-report.md", "text/markdown");
+        }
+      } catch (e) {
+        setError(e instanceof Error ? e.message : String(e));
+      } finally {
+        setExportingReport(false);
+      }
+    },
+    [diffParams, downloadFile, key, newSide, oldSide, proUnlocked, schemaDiff, summary],
   );
 
   const bothLoaded = Boolean(oldSide && newSide);
@@ -454,6 +513,52 @@ export function DiffClient() {
                 </p>
               </div>
             ))}
+          </div>
+
+          <div
+            className="flex flex-col gap-3 rounded-lg border border-neutral-200 px-4 py-3 dark:border-neutral-800"
+            data-testid="diff-report-export"
+          >
+            {proUnlocked ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-sm font-semibold">Export full report</p>
+                <div className="flex flex-1 justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => exportReport("html")}
+                    disabled={exportingReport}
+                    data-testid="export-report-html"
+                    className="rounded-md border border-neutral-300 px-3 py-1.5 text-xs font-medium hover:border-sky-500 disabled:opacity-50 dark:border-neutral-700"
+                  >
+                    {exportingReport ? "Preparing…" : "Download HTML"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exportReport("markdown")}
+                    disabled={exportingReport}
+                    data-testid="export-report-markdown"
+                    className="rounded-md border border-neutral-300 px-3 py-1.5 text-xs font-medium hover:border-sky-500 disabled:opacity-50 dark:border-neutral-700"
+                  >
+                    {exportingReport ? "Preparing…" : "Download Markdown"}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="text-sm font-semibold">Export report</p>
+                  <button
+                    type="button"
+                    onClick={() => exportReport("markdown")}
+                    data-testid="export-report-free"
+                    className="ml-auto rounded-md border border-neutral-300 px-3 py-1.5 text-xs font-medium hover:border-sky-500 dark:border-neutral-700"
+                  >
+                    Download free report (summary + schema)
+                  </button>
+                </div>
+                <ProUnlock onUnlocked={() => setProUnlocked(true)} />
+              </>
+            )}
           </div>
 
           <div className="flex items-center gap-1 border-b border-neutral-200 dark:border-neutral-800">
