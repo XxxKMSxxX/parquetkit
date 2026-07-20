@@ -7,9 +7,14 @@ import {
   type DiffRowStatus,
   type DiffSqlOptions,
 } from "./sql";
+import type { DiffReportRowsInput } from "./report";
 
 export type { DiffRowStatus, DiffSqlOptions } from "./sql";
 export * from "./schema";
+export * from "./report";
+
+/** Row cap per status when fetching a full (unpaged) diff for report export. */
+export const MAX_REPORT_ROWS = 50_000;
 
 export interface DiffSummary {
   added: number;
@@ -100,4 +105,40 @@ export async function fetchDiffRows(
   params: DiffParams & { status: DiffRowStatus; limit: number; offset: number },
 ): Promise<QueryResult> {
   return runQuery(db, buildDiffRowsSql({ ...params, ...inputs }));
+}
+
+/** All rows for one status, capped at MAX_REPORT_ROWS (never silently — check `truncated`). */
+async function fetchAllRowsForStatus(
+  db: duckdb.AsyncDuckDB,
+  inputs: DiffInputs,
+  params: DiffParams & { status: DiffRowStatus },
+): Promise<{ result: QueryResult; truncated: boolean }> {
+  const result = await fetchDiffRows(db, inputs, {
+    ...params,
+    limit: MAX_REPORT_ROWS + 1,
+    offset: 0,
+  });
+  const truncated = result.rows.length > MAX_REPORT_ROWS;
+  if (!truncated) return { result, truncated };
+  const capped = result.rows.slice(0, MAX_REPORT_ROWS);
+  return { result: { ...result, rows: capped, numRows: capped.length }, truncated };
+}
+
+/** Full (unpaged) added/removed/changed rows for report export, each capped at MAX_REPORT_ROWS. */
+export async function fetchAllDiffRows(
+  db: duckdb.AsyncDuckDB,
+  inputs: DiffInputs,
+  params: DiffParams,
+): Promise<DiffReportRowsInput> {
+  const [added, removed, changed] = await Promise.all([
+    fetchAllRowsForStatus(db, inputs, { ...params, status: "added" }),
+    fetchAllRowsForStatus(db, inputs, { ...params, status: "removed" }),
+    fetchAllRowsForStatus(db, inputs, { ...params, status: "changed" }),
+  ]);
+  return {
+    added: added.result,
+    removed: removed.result,
+    changed: changed.result,
+    truncated: added.truncated || removed.truncated || changed.truncated,
+  };
 }

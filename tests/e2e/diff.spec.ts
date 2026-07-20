@@ -37,6 +37,13 @@ test("comparing two parquet files shows schema diff, summary counts and detail t
   await expect(page.getByTestId("diff-rows")).toContainText("user_003 → renamed_003", {
     timeout: 15_000,
   });
+
+  // No Polar config in this build (no NEXT_PUBLIC_POLAR_* env vars) — the Pro
+  // unlock widget stays hidden entirely, but the free report export still works.
+  await expect(page.getByTestId("pro-unlock")).toHaveCount(0);
+  const download = page.waitForEvent("download");
+  await page.getByTestId("export-report-free").click();
+  expect((await download).suggestedFilename()).toBe("parquet-diff-report.md");
 });
 
 test("compares the sample files in one click", async ({ page }) => {
