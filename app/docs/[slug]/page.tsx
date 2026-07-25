@@ -5,6 +5,7 @@ import { Faq } from "@/components/seo/Faq";
 import { ShareButtons } from "@/components/seo/ShareButtons";
 import { Markdown } from "@/components/seo/Markdown";
 import { findDoc, loadDocs } from "@/lib/content/loader";
+import { pickRelated } from "@/lib/content/related";
 import { extractToc } from "@/lib/content/toc";
 import { Toc } from "@/components/seo/Toc";
 import { JsonLd, techArticleJsonLd } from "@/components/seo/JsonLd";
@@ -34,9 +35,10 @@ export default async function DocPage({
   if (!entry) notFound();
 
   const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const related = loadDocs()
-    .filter((doc) => doc.meta.slug !== slug)
-    .slice(0, 3);
+  const related = pickRelated(
+    loadDocs().map((doc) => doc.meta),
+    slug,
+  );
   const toc = [
     ...extractToc(entry.body),
     ...(entry.meta.faq.length > 0
@@ -82,16 +84,16 @@ export default async function DocPage({
       {related.length > 0 ? (
         <section className="flex flex-col gap-3 border-t border-neutral-200 pt-8 dark:border-neutral-800">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-400">
-            More guides
+            Related guides
           </h2>
           <ul className="flex flex-col gap-2 text-sm">
             {related.map((doc) => (
-              <li key={doc.meta.slug}>
+              <li key={doc.slug}>
                 <Link
-                  href={`/docs/${doc.meta.slug}`}
+                  href={`/docs/${doc.slug}`}
                   className="underline transition-colors hover:text-sky-600 dark:hover:text-sky-400"
                 >
-                  {doc.meta.title}
+                  {doc.title}
                 </Link>
               </li>
             ))}
