@@ -29,7 +29,7 @@
     "@codemirror/view": "^6.43.6",
     "@duckdb/duckdb-wasm": "1.33.1-dev57.0",
     "@lezer/highlight": "^1.2.3",
-    "@sentry/nextjs": "^10.65.0",
+    "@sentry/nextjs": "^10.75.2",
     "apache-arrow": "^21.1.0",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
